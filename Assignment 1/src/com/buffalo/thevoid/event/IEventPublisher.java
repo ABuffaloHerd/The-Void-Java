@@ -5,5 +5,5 @@ package com.buffalo.thevoid.event;
 public interface IEventPublisher
 {
     void addEventHandler(IEventHandler<?> e);
-    void removeEventHandler(IEventHandler<?> f);
+    void removeEventHandler(IEventHandler<?> f); // Not used but declared here anyway.
 }

@@ -1,8 +1,8 @@
 package com.buffalo.thevoid.event;
 
 // heheheha grr heheheha grr
-// https://stackoverflow.com/questions/1530461/alternate-of-c-sharp-events-in-java
 // Throw arguments between objects (threading gives me a headache)
+// Like C#'s event system.
 
 public interface IEventHandler<E>
 {
