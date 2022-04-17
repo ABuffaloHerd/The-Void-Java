@@ -30,7 +30,7 @@ public class WeaponList implements IEventPublisher
     private static Weapon Hammer;
     private static Weapon Zenith;
     private static final Set<IEventHandler<String>> eventHandlerSet = new HashSet<>();
-    public static List<Tuple<Weapon, Boolean>> WeaponData = new ArrayList<>();
+    public static List<Tuple<Weapon, Boolean>> WeaponData;
 
     // Initializer. Make all the weapons and dump them in a public list.
     // Can't be static because it needs to access member data.
@@ -107,7 +107,7 @@ public class WeaponList implements IEventPublisher
 
                     burn += IEntity.takeDamage(500, DamageType.PHYSICAL);
                     return burn;
-                }, 10);
+                }, 11);
 
         Zenith = new Weapon("Zenith",
                 IEntity ->
@@ -119,7 +119,7 @@ public class WeaponList implements IEventPublisher
                     }
 
                     return maxPain;
-                }, 10);
+                }, 13);
 
         ChiXiao = new Weapon("Chi Xiao",
                 IEntity ->
@@ -133,7 +133,7 @@ public class WeaponList implements IEventPublisher
                     total += IEntity.takeDamage(800, DamageType.PURE);
 
                     return total;
-                }, 12);
+                }, 16);
 
         YingXiao = new Weapon("Ying Xiao",
                 IEntity ->
@@ -145,36 +145,40 @@ public class WeaponList implements IEventPublisher
                     for(int x = 0; x < 10; x++)
                     {
                         total += IEntity.takeDamage(750, DamageType.PHYSICAL);
+                        raise("Slash!");
                     }
 
                     total += IEntity.takeDamage(1000, DamageType.PURE);
                     return total;
-                }, 12);
+                }, 16);
 
         // TODO: RESET ALL TO FALSE EXCEPT WOODEN SWORD BEFORE SUBMISSION
+        WeaponData  = new ArrayList<>();
         WeaponData.add(new Tuple<>(WoodSword, true));
-        WeaponData.add(new Tuple<>(Katana, true));
-        WeaponData.add(new Tuple<>(HFBlade, true));
-        WeaponData.add(new Tuple<>(HFMurasama, true));
-        WeaponData.add(new Tuple<>(Polearm, true));
-        WeaponData.add(new Tuple<>(Hammer, true));
-        WeaponData.add(new Tuple<>(TBlade, true));
-        WeaponData.add(new Tuple<>(Zenith, true));
-        WeaponData.add(new Tuple<>(ChiXiao, true));
-        WeaponData.add(new Tuple<>(YingXiao, true));
+        WeaponData.add(new Tuple<>(Katana, false));
+        WeaponData.add(new Tuple<>(HFBlade, false));
+        WeaponData.add(new Tuple<>(HFMurasama, false));
+        WeaponData.add(new Tuple<>(Polearm, false));
+        WeaponData.add(new Tuple<>(Hammer, false));
+        WeaponData.add(new Tuple<>(TBlade, false));
+        WeaponData.add(new Tuple<>(Zenith, false));
+        WeaponData.add(new Tuple<>(ChiXiao, false));
+        WeaponData.add(new Tuple<>(YingXiao, false));
     }
 
     // This scrolls through the list and unlocks the next weapon
-    public static void unlockWeapon()
+    public static boolean unlockWeapon()
     {
         for (var v: WeaponList.WeaponData)
         {
             if(!v.getItem2())
             {
                 v.setItem2(true);
-                return;
+                return true;
             }
         }
+        
+        return false;
     }
 
     @Override
