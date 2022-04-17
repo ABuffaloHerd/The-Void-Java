@@ -55,9 +55,10 @@ public class Program implements IEventPublisher
             System.out.println("7 - " + GameEvent.EXBOSS.text + " - Fight the final boss.");
             System.out.println("8 - " + GameEvent.RESUPPLY.text + " - Refill your health and mana.");
             System.out.println("9 - Show Stats");
-            System.out.println("10 - " + GameEvent.EXIT.text + " - Exit the game. Progress not saved~");
+            System.out.println("10 - How to play");
+            System.out.println("11 - " + GameEvent.EXIT.text + " - Exit the game. Progress not saved~");
 
-            selection = TextHandler.validInt("", 10, 1);
+            selection = TextHandler.validInt("", 11, 1);
 
             // Can't play without a player you clown.
             if(selection > 2 && !manager.isReady())
@@ -85,9 +86,24 @@ public class Program implements IEventPublisher
                 case 7 -> program.raise(GameEvent.EXBOSS);
                 case 8 -> program.raise(GameEvent.RESUPPLY);
                 case 9 -> manager.showStats();
-                case 10 -> gameRunning = false;
+                case 10 -> help();
+                case 11 -> gameRunning = false;
             }
         }
+    }
+
+    private static void help()
+    {
+        System.out.println("Welcome to the void, a game about beating the crap out of enemies.");
+        System.out.println("Choose the battle option to instigate a fight with common monsters.");
+        System.out.println("Win this fight to increase your killcount. Level up every few kills. (specified in config)");
+        System.out.println("Unlock a new weapon every time you level up. These weapons have level requirements however.");
+        System.out.println("When you think you're ready, you may choose to fight a boss.");
+        System.out.println("They have level requirements, but those are just a suggestion.");
+        System.out.println("You may fight them at any level above the minimum.");
+        System.out.println("Defeating a boss for the first time will grant you five kills (hardcoded)");
+        System.out.println("After you've gotten bored of grinding you may choose to fight the final boss. She has no level requirement.");
+        TextHandler.validInt("\n\nEnter any integer to continue.");
     }
 
     // Raise event
