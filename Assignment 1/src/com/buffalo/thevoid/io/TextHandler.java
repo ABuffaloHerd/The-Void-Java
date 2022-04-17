@@ -48,6 +48,31 @@ public class TextHandler
         return input;
     }
 
+    // Has no limits.
+    public static int validInt(String question)
+    {
+        boolean lock = true;
+        int input = 0xFFFFFF;
+        System.out.println(question);
+
+        while(lock)
+        {
+            try
+            {
+                input = s.nextInt();
+                lock = false;
+            }
+            catch(InputMismatchException e)
+            {
+                System.out.println("Input a valid integer.");
+                // Flush
+                s.nextLine();
+            }
+        }
+
+        return input;
+    }
+
     // Clears console
     public static void clearConsole()
     {
