@@ -21,6 +21,7 @@ public class GameManager implements IEventHandler<GameEvent>
 
     // calls methods to handle game events
     // program flow returns to main function after this.
+    // Since this class handles events, it calls this function if it wants to raise an event.
     @Override
     public void handleEvent(Object sender, GameEvent args)
     {
@@ -30,15 +31,20 @@ public class GameManager implements IEventHandler<GameEvent>
             case NEWGAME ->
                     {
                         player = NewGame.newPlayer();
-                        playerLoaded = true;
+                        playerLoaded = player != null;
                     }
             case LOADGAME ->
                     {
                         player = NewGame.loadPlayer();
-                        playerLoaded = true;
+                        playerLoaded = player != null;
+                        if(playerLoaded) System.out.printf("Player %s loaded!\n", player.name);
                         TextHandler.wait(1800);
                     }
-            case SAVEGAME -> FileHandler.savePlayer(player);
+            case SAVEGAME ->
+                    {
+                        FileHandler.savePlayer(player);
+                        TextHandler.wait(2500);
+                    }
             case SHOP -> shop();
             case RESUPPLY ->
                     { // resupply method
@@ -51,8 +57,9 @@ public class GameManager implements IEventHandler<GameEvent>
             case EXBOSS -> finalBoss();
             case LEVELUP ->
                     { // This is short enough to include the wait.
-                        System.out.println("New weapon unlocked!");
-                        WeaponList.unlockWeapon();
+                        if(WeaponList.unlockWeapon())
+                            System.out.println("New weapon unlocked!");
+                        
                         TextHandler.wait(1000);
                     }
             case PLAYERWIN ->
@@ -75,7 +82,7 @@ public class GameManager implements IEventHandler<GameEvent>
                         System.out.println("get rekt");
                         System.out.println("go touch some grass");
                         System.out.println("so many nubs in this game");
-                        TextHandler.wait(3000);
+                        TextHandler.wait(8000);
                         handleEvent(this, GameEvent.RESUPPLY);
                     }
         }
@@ -93,7 +100,7 @@ public class GameManager implements IEventHandler<GameEvent>
         System.out.printf("%sInventory%s\n\n", ConsoleColours.ANSI_GREEN_BACKGROUND, ConsoleColours.TEXT_RESET);
         System.out.printf("Currently equipped: %s%s%s\n", ConsoleColours.TEXT_BLUE, player.getWeapon().name, ConsoleColours.TEXT_RESET);
         System.out.println("The following weapons are available:");
-        System.out.printf("%sIndex - Name%s\n", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET);
+        System.out.printf("%s[Index - Name]%s\n\n", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET);
 
         for (var set : WeaponList.WeaponData)
         {
@@ -144,7 +151,7 @@ public class GameManager implements IEventHandler<GameEvent>
             printHeader(true);
 
             battleMenu(e);
-            int choice = TextHandler.validInt("Enter number to choose action.", 4, 1);
+            int choice = TextHandler.validInt("Enter number to choose action.", 5, 1);
 
             // PLAYER ACTION SECTION
             if(playerAction(choice, e))
@@ -227,7 +234,7 @@ public class GameManager implements IEventHandler<GameEvent>
             TextHandler.wait(1000);
 
             battleMenu(boss);
-            int choice = TextHandler.validInt("Enter number to choose action.", 4, 1); // reuse the choice variable
+            int choice = TextHandler.validInt("Enter number to choose action.", 5, 1); // reuse the choice variable
 
             // PLAYER ACTION SECTION
             if(playerAction(choice, boss))
@@ -328,7 +335,7 @@ public class GameManager implements IEventHandler<GameEvent>
             TextHandler.wait(1000);
 
             battleMenu(boss);
-            int choice = TextHandler.validInt("Enter number to choose action.", 4, 1); // reuse the choice variable
+            int choice = TextHandler.validInt("Enter number to choose action.", 5, 1); // reuse the choice variable
 
             // PLAYER ACTION SECTION
             if(playerAction(choice, boss))
@@ -418,8 +425,9 @@ public class GameManager implements IEventHandler<GameEvent>
         System.out.println("What will you do?");
         System.out.println("1 - Fight!");
         System.out.println("2 - Defend!");
-        System.out.println("3 - Heal!");
+        System.out.println("3 - Heal! (20 MP)");
         System.out.println("4 - Nothing!"); // The shell has spoken!
+        System.out.println("5 - Surrender..");
     }
 
     // Helper method to remove duplicated code
@@ -428,6 +436,9 @@ public class GameManager implements IEventHandler<GameEvent>
     private boolean playerAction(int choice, Entity e)
     {
         // PLAYER ACTION SECTION
+        // Make sure no defense is applied
+        player.isDefending = false;
+
         switch (choice)
         {
             case 1:
@@ -442,6 +453,7 @@ public class GameManager implements IEventHandler<GameEvent>
                 if (amount == 0)
                 {
                     System.out.println("You don't have enough mana!");
+                    TextHandler.wait(2000);
                     return true;
                 }
                 else
@@ -450,6 +462,8 @@ public class GameManager implements IEventHandler<GameEvent>
                 }
             case 4: // Why did i include this option it's useless
                 break;
+            case 5:
+                player.takeDamage(100000, DamageType.PURE);
         }
 
         return false;
@@ -464,7 +478,7 @@ public class GameManager implements IEventHandler<GameEvent>
         System.out.println("RES: " + player.getRES());
         System.out.println("Level: " + player.getLevel());
 
-        TextHandler.wait(3000);
+        TextHandler.wait(6000);
     }
 
     // Prints start or end of turn headers
@@ -473,13 +487,13 @@ public class GameManager implements IEventHandler<GameEvent>
         if(flag)
         {
             System.out.println("===========================");
-            System.out.println("==    START OF TURN     ==");
+            System.out.println("==     START OF TURN     ==");
             System.out.println("===========================");
         }
         else
         {
             System.out.println("===========================");
-            System.out.println("==    END OF TURN       ==");
+            System.out.println("==      END OF TURN      ==");
             System.out.println("===========================");
         }
 
