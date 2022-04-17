@@ -10,18 +10,19 @@ import java.util.Random;
 public abstract @Getter class Entity implements IEntity
 {
     public String name;
-    protected @Getter int MaxHP;
-    protected @Getter int DEF;
-    protected @Getter int RES;
+    protected int MaxHP;
+    protected int DEF;
+    protected int RES;
     protected @Setter int HP;
     protected ProgressBar healthBar;
 
     protected Random rand = new Random();
 
     /**
-     * Makes this entity get hurt. Passes amount of pain to lastDamageTaken
-     * @param amount How much pain?
+     * Makes this entity get hurt.Passes amount of pain to lastDamageTaken
+     * @param oAmount How much pain?
      * @param type What kind of pain?
+     * @return damage taken after defense and resistances.
      */
     @Override
     public int takeDamage(int oAmount, DamageType type)
