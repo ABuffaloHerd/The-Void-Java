@@ -30,7 +30,7 @@ public class BossList implements IEventPublisher
 
     private static Boss Skeletron, Mariah, RoboGlasse, CrackerBrothers, JerryChen;
     private static final Set<IEventHandler<String>> eventHandlers = new HashSet<>();
-    public static List<Tuple3<Boss, Boolean, Integer>> BossData = new ArrayList<>();
+    public static List<Tuple3<Boss, Boolean, Integer>> BossData;
     public static ExBoss Hirina;
 
     // Initializer
@@ -39,21 +39,21 @@ public class BossList implements IEventPublisher
         try
         {
             // Declare bosses
-            Skeletron = new Boss("Skeletron 1000", FileHandler.loadBossQuotes("skeletron"), 1000, 50, 10,
-                    IEntity -> IEntity.takeDamage(60, DamageType.PHYSICAL),
+            Skeletron = new Boss("Skeletron 1000", FileHandler.loadBossQuotes("skeletron"), 1000, 30, 10,
+                    IEntity -> IEntity.takeDamage(160, DamageType.PHYSICAL),
                     IEntity ->
                     {
                         int pain = 0;
                         raise(ConsoleColours.TEXT_YELLOW + "Skeletron 1K: ACTIVATING ROASTERINATOR 20000" + ConsoleColours.TEXT_RESET);
 
-                        pain += IEntity.takeDamage(50, DamageType.MAGIC);
-                        pain += IEntity.takeDamage(50, DamageType.MAGIC);
+                        pain += IEntity.takeDamage(100, DamageType.MAGIC);
+                        pain += IEntity.takeDamage(100, DamageType.MAGIC);
 
                         return pain;
                     });
 
             Mariah = new Boss("Mariah", FileHandler.loadBossQuotes("mariah"), 5000, 100, 20,
-                    IEntity -> IEntity.takeDamage(100, DamageType.PHYSICAL),
+                    IEntity -> IEntity.takeDamage(200, DamageType.PHYSICAL),
                     IEntity ->
                     {
                         int yeowch = 0;
@@ -73,7 +73,7 @@ public class BossList implements IEventPublisher
                         int oof = 0;
                         raise(ConsoleColours.TEXT_YELLOW + "Robo-Glasse: \"Right, this isn't my problem anymore. Get out.\"" + ConsoleColours.TEXT_RESET);
 
-                        oof += IEntity.takeDamage(300, DamageType.PURE);
+                        oof += IEntity.takeDamage(290, DamageType.PURE);
                         for(int x = 0; x < 5; x++)
                         {
                             oof += IEntity.takeDamage(50, DamageType.PHYSICAL);
@@ -87,8 +87,8 @@ public class BossList implements IEventPublisher
                     {
                         int yeesh = 0;
                         raise(ConsoleColours.TEXT_PURPLE + "Cracker Brothers: \"Cracker Brothers' twin attack!\"" + ConsoleColours.TEXT_RESET);
-                        yeesh += IEntity.takeDamage(420, DamageType.PHYSICAL);
-                        yeesh += IEntity.takeDamage(420, DamageType.MAGIC);
+                        yeesh += IEntity.takeDamage(320, DamageType.PHYSICAL);
+                        yeesh += IEntity.takeDamage(170, DamageType.MAGIC);
 
                         return yeesh;
                     },
@@ -98,9 +98,9 @@ public class BossList implements IEventPublisher
 
                         System.out.printf("Cracker Brothers' Signature Move: %s L E A N   B E A M %s\n", ConsoleColours.TEXT_PURPLE, ConsoleColours.TEXT_RESET);
 
-                        bigPain += IEntity.takeDamage(650, DamageType.PHYSICAL);
-                        bigPain += IEntity.takeDamage(300, DamageType.MAGIC);
-                        bigPain += IEntity.takeDamage(200, DamageType.PURE);
+                        bigPain += IEntity.takeDamage(400, DamageType.PHYSICAL);
+                        bigPain += IEntity.takeDamage(100, DamageType.MAGIC);
+                        bigPain += IEntity.takeDamage(100, DamageType.PURE);
 
                         return bigPain;
                     });
@@ -143,6 +143,7 @@ public class BossList implements IEventPublisher
                         for(int x = 0; x < 1000; x++)
                         {
                             extremePain += IEntity.takeDamage(1, DamageType.PURE);
+                            raise(String.format("%s Chun Jun: Slash!%s\n", ConsoleColours.TEXT_RED, ConsoleColours.TEXT_RESET));
                         }
 
                         return extremePain;
@@ -172,11 +173,12 @@ public class BossList implements IEventPublisher
         }
 
         // Add them to the public list
+        BossData = new ArrayList<>();
         BossData.add(new Tuple3<>(Skeletron, false, 2));
         BossData.add(new Tuple3<>(Mariah, false, 5));
-        BossData.add(new Tuple3<>(RoboGlasse, false, 7));
-        BossData.add(new Tuple3<>(CrackerBrothers, false, 10));
-        BossData.add(new Tuple3<>(JerryChen, false, 12));
+        BossData.add(new Tuple3<>(RoboGlasse, false, 8));
+        BossData.add(new Tuple3<>(CrackerBrothers, false, 11));
+        BossData.add(new Tuple3<>(JerryChen, false, 15));
 
         // Register the master event handler
         addEventHandler(MasterEventHandler.masterEventHandler);
