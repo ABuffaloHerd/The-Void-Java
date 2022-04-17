@@ -4,6 +4,8 @@ public class ConsoleColours
 {
     // Java console color constants
     // Doesn't work in cmd.exe
+    // Doesn't work in netbeans either. (bad ide)
+    // Works in intellij (good ide)
     // FROM https://www.w3schools.blog/java-console-and-terminal-color
     public static final String TEXT_RED = "\u001B[31m";
     public static final String TEXT_BLACK = "\u001B[30m";
