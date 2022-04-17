@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.util.Random;
 
 // You the player
+// Can't put @Getter because of one private attribute.
 public class Player extends Entity
 {
     private @Getter @Setter int MaxMP;
@@ -56,7 +57,7 @@ public class Player extends Entity
     }
 
     // Constructor for when you load a player
-    public Player(String name, int MaxHP, int MaxMP, int HP, int MP, int DEF, int RES, int killCount, int level, int killsToLevel, Weapon weapon)
+    public Player(String name, int MaxHP, int MaxMP, int DEF, int RES, int killCount, int level, int killsToLevel, Weapon weapon)
     {
         this(name, MaxHP, MaxMP, DEF, RES, weapon, killsToLevel, level);
         this.killCount = killCount;
@@ -85,7 +86,7 @@ public class Player extends Entity
                 }
                 else
                 {
-                    taken = Math.round((float)amount / (float)this.RES);
+                    taken = Math.round((float)amount * ((float)this.RES) / 100.0f);
                 }
                 break;
 
@@ -116,7 +117,12 @@ public class Player extends Entity
             amount = Math.round(MaxHP * 0.25f);
 
             this.HP += amount;
+            updateHealthBar();
             updateMagicBar();
+
+            // Make sure hp is capped
+            if(HP > MaxHP)
+                HP = MaxHP;
             return amount;
         }
     }
@@ -124,6 +130,10 @@ public class Player extends Entity
     // Level up, returns if level up was successful
     public boolean updateLevel()
     {
+        // For safety, check tht killcount and killstolevel are not zero
+        if(killCount == 0 || killsToLevel == 0)
+            return false;
+
         // Check how many times you've levelled up
         int levelUpCount = killCount / killsToLevel;
 
@@ -132,7 +142,7 @@ public class Player extends Entity
         {
             level++;
             this.MaxHP += 50;
-            this.MaxMP += 20;
+            this.MaxMP += 25;
             this.DEF += 15;
             this.RES += 5;
         }
