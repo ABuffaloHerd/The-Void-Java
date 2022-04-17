@@ -2,6 +2,7 @@ package com.buffalo.thevoid.io;
 
 import com.buffalo.thevoid.data.Config;
 import com.buffalo.thevoid.entity.Player;
+import com.buffalo.thevoid.equipment.WeaponList;
 
 import java.io.*;
 
@@ -78,12 +79,25 @@ public class FileHandler
     }
 
     /**
-     * Writes player data to player data file. Does not serialize the player object. (lambdas fkin hate that)
-     * This class doesn't have the loadPlayer method because that's newGame's job.
+     * Writes player data to player data file. Does not serialize the player object. (lambdas hate that)
+     * This class doesn't have the loadPlayer method because that's NewGame's job.
      * @param p The player to write.
      */
     public static void savePlayer(Player p)
     {
+        p.refreshStats(); // make sure player is at max stats before writing to file
+
+        // Count weapons unlocked
+        int weaponsUnlocked = 0;
+        for(var v: WeaponList.WeaponData)
+        {
+            if(v.getItem2())
+                weaponsUnlocked++;
+        }
+
+        // Compensating for wooden sword being unlocked at the start.
+        weaponsUnlocked -= 1;
+
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(Config.cwd + "/resources/save/player.dat")))
         {
             bw.write("Name=" + p.name + "\n");
@@ -93,6 +107,7 @@ public class FileHandler
             bw.write("MP=" + p.getMaxMP() + "\n");
             bw.write("DEF=" + p.getDEF() + "\n");
             bw.write("RES=" + p.getRES() + "\n");
+            bw.write("WeaponsUnlocked=" + weaponsUnlocked + "\n");
         }
         catch (IOException e)
         {
@@ -100,6 +115,7 @@ public class FileHandler
         }
 
         System.out.println("Player data saved.");
+
     }
 
 }
