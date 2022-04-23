@@ -7,14 +7,19 @@ import java.util.function.Function;
 /**
  * base class for all items
  */
-public abstract class AbstractItem
+public abstract class AbstractItem implements IItem
 {
     public String name;
-    public Function<IEntity, Integer> useMethod;
+    protected final Function<IEntity, Integer> useMethod;
 
     public AbstractItem(String name, Function<IEntity, Integer> useMethod)
     {
         this.name = name;
         this.useMethod = useMethod;
+    }
+
+    public int use(IEntity entity)
+    {
+        return useMethod.apply(entity);
     }
 }

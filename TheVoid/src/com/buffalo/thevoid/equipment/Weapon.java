@@ -16,4 +16,10 @@ public class Weapon extends AbstractItem
         super(name, attackMethod);
         this.levelRequired = levelRequired;
     }
+
+    @Override
+    public int use(IEntity e)
+    {
+        return super.use(e);
+    }
 }
