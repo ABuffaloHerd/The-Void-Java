@@ -2,6 +2,7 @@ package com.buffalo.thevoid.equipment;
 
 import com.buffalo.thevoid.data.Tuple;
 import com.buffalo.thevoid.entity.DamageType;
+import com.buffalo.thevoid.entity.IEntity;
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
 import com.buffalo.thevoid.io.ConsoleColours;
@@ -38,119 +39,14 @@ public class WeaponList implements IEventPublisher
         System.out.println("Initializing WeaponList...");
         // TODO: Colour string formatting
 
+        WoodSword = new Weapon("Wooden Sword",
+                IEntity ->
+                {
+                    return IEntity.takeDamage(30, DamageType.PHYSICAL);
+                }, null, 0, null);
+
         // Register event handler
         this.addEventHandler(MasterEventHandler.masterEventHandler);
-
-        // Declare weapons
-        WoodSword = new Weapon("Wooden Sword", IEntity -> IEntity.takeDamage(30, DamageType.PHYSICAL), 0);
-        Katana = new Weapon("Katana",
-                IEntity ->
-                {
-                    int ow = 0;
-                    ow += IEntity.takeDamage(80, DamageType.PHYSICAL);
-                    ow += IEntity.takeDamage(80, DamageType.PHYSICAL);
-
-                    return ow;
-                }, 2);
-
-        HFBlade = new Weapon("High Frequency Blade",
-                IEntity ->
-                {
-                    int ow = 0;
-                    ow += IEntity.takeDamage(170, DamageType.PHYSICAL);
-                    ow += IEntity.takeDamage(170, DamageType.PHYSICAL);
-                    ow += IEntity.takeDamage(170, DamageType.PHYSICAL);
-
-                    return ow;
-                }, 4);
-
-        HFMurasama = new Weapon("High Frequency Murasama",
-                IEntity ->
-                {
-                    raise(String.format("%sThe only thing I know for real.%s", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET));
-                    return IEntity.takeDamage(420, DamageType.PHYSICAL);
-                }, 7);
-
-        Polearm = new Weapon("Comically Large Spoon",
-                IEntity ->
-                {
-                    int ow = 0;
-                    raise(String.format("%sOnly a spoonful.%s", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET));
-                    for (int i = 0; i < 3; i++)
-                    {
-                        ow += IEntity.takeDamage(410, DamageType.MAGIC);
-                    }
-
-                    return ow;
-                }, 8);
-
-        Hammer = new Weapon("Andre's Hammer",
-                IEntity ->
-                {
-                    int bzzt = 0;
-                    raise(String.format("%sStrike me down Zeus! You don't have the balls...%s", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET));
-
-                    bzzt += IEntity.takeDamage(600, DamageType.MAGIC);
-                    bzzt += IEntity.takeDamage(100, DamageType.PURE);
-
-                    return bzzt;
-                }, 8);
-
-        TBlade = new Weapon("Terra Blade",
-                IEntity ->
-                {
-                    int burn = 0;
-                    for(int x = 0; x < 4; x++)
-                    {
-                        burn += IEntity.takeDamage(300, DamageType.MAGIC);
-                    }
-
-                    burn += IEntity.takeDamage(500, DamageType.PHYSICAL);
-                    return burn;
-                }, 11);
-
-        Zenith = new Weapon("Zenith",
-                IEntity ->
-                {
-                    int maxPain = 0;
-                    for(int x = 0; x < 7; x++)
-                    {
-                        maxPain += IEntity.takeDamage(550, DamageType.MAGIC);
-                    }
-
-                    return maxPain;
-                }, 13);
-
-        ChiXiao = new Weapon("Chi Xiao",
-                IEntity ->
-                {
-                    int total = 0;
-
-                    raise("Chi Xiao - [Unsheathe]"); // It's cool when you announce what's about to happen
-
-                    total += IEntity.takeDamage(800, DamageType.MAGIC);
-                    total += IEntity.takeDamage(800, DamageType.PHYSICAL);
-                    total += IEntity.takeDamage(800, DamageType.PURE);
-
-                    return total;
-                }, 16);
-
-        YingXiao = new Weapon("Ying Xiao",
-                IEntity ->
-                {
-                    int total = 0;
-
-                    raise("Ying Xiao - [Shadowless]");
-
-                    for(int x = 0; x < 10; x++)
-                    {
-                        total += IEntity.takeDamage(750, DamageType.PHYSICAL);
-                        raise("Slash!");
-                    }
-
-                    total += IEntity.takeDamage(1000, DamageType.PURE);
-                    return total;
-                }, 16);
 
         // TODO: RESET ALL TO FALSE EXCEPT WOODEN SWORD BEFORE SUBMISSION
         WeaponData  = new ArrayList<>();

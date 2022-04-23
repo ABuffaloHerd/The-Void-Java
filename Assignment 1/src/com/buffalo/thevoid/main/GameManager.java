@@ -443,7 +443,7 @@ public class GameManager implements IEventHandler<GameEvent>
         {
             case 1:
                 System.out.println("You attack!");
-                System.out.println("Dealt " + player.getWeapon().attackMethod.apply(e) + " damage!");
+                System.out.println("Dealt " + player.getWeapon().use(e) + " damage!");
                 break;
             case 2:
                 player.isDefending = true;
