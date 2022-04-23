@@ -4,6 +4,5 @@ public interface IEffect
 {
     void firstApply();
     void onProcess();
-    void onCure();
     void finish();
 }
