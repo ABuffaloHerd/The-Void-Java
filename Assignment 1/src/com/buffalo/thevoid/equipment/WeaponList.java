@@ -40,10 +40,173 @@ public class WeaponList implements IEventPublisher
         // TODO: Colour string formatting
 
         WoodSword = new Weapon("Wooden Sword",
+                IEntity -> IEntity.takeDamage(30, DamageType.PHYSICAL),
+                null, 0, -1);
+
+        Katana = new Weapon("Katana",
                 IEntity ->
                 {
-                    return IEntity.takeDamage(30, DamageType.PHYSICAL);
-                }, null, 0, null);
+                    int ow = 0;
+                    ow += IEntity.takeDamage(80, DamageType.PHYSICAL);
+                    ow += IEntity.takeDamage(80, DamageType.PHYSICAL);
+                    return ow;
+                }, null, 2, -1);
+
+        HFBlade = new Weapon("High-Frequency Blade",
+                IEntity ->
+                {
+                    int ow = 0;
+                    ow += IEntity.takeDamage(170, DamageType.PHYSICAL);
+                    ow += IEntity.takeDamage(170, DamageType.PHYSICAL);
+                    return ow;
+                }, null, 4, -1);
+
+        HFMurasama = new Weapon("High-Frequency Murasama",
+                IEntity ->
+                {
+                    raise(String.format("%sThe only thing I know for real.%s", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET));
+                    int ow = 0;
+                    ow += IEntity.takeDamage(200, DamageType.PHYSICAL);
+                    ow += IEntity.takeDamage(200, DamageType.PHYSICAL);
+                    return ow;
+                },
+                IEntity ->
+                {
+                    raise(String.format("%sIt's the only thing I've ever known.%s", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET));
+                    int jetstreamsam = 0;
+                    jetstreamsam += IEntity.takeDamage(420, DamageType.PHYSICAL);
+                    return jetstreamsam;
+                }, 7, 30);
+
+        Polearm = new Weapon("Comically Large Spoon",
+                IEntity ->
+                {
+                    int iceCream = 0;
+                    iceCream += IEntity.takeDamage(350, DamageType.PHYSICAL);
+                    iceCream += IEntity.takeDamage(250, DamageType.MAGIC);
+                    return iceCream;
+                },
+                IEntity ->
+                {
+                    int kingBach = 0;
+                    for(int x = 0; x < 3; x++)
+                    {
+                        kingBach += IEntity.takeDamage(410, DamageType.MAGIC);
+                    }
+
+                    return kingBach;
+                }, 8, 40);
+
+        Hammer = new Weapon("Andre's Hammer",
+                IEntity ->
+                {
+                    int ow = 0;
+                    ow += IEntity.takeDamage(400, DamageType.PHYSICAL);
+                    return ow;
+                },
+                IEntity ->
+                {
+                    int bzzt = 0;
+                    raise(String.format("%sStrike me down Zeus! You don't have the balls...%s", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET));
+
+                    bzzt += IEntity.takeDamage(600, DamageType.MAGIC);
+                    bzzt += IEntity.takeDamage(100, DamageType.PURE);
+
+                    return bzzt;
+                }, 8, 55);
+
+        TBlade = new Weapon("Terra Blade",
+                IEntity ->
+                {
+                    int burn = 0;
+                    for(int x = 0; x < 4; x++)
+                    {
+                        burn += IEntity.takeDamage(300, DamageType.MAGIC);
+                    }
+
+                    burn += IEntity.takeDamage(450, DamageType.PHYSICAL);
+                    return burn;
+                },
+                IEntity ->
+                {
+                    int burn = 0;
+                    for(int x = 0; x < 3; x++)
+                    {
+                        burn += IEntity.takeDamage(350, DamageType.PHYSICAL);
+                    }
+
+                    burn += IEntity.takeDamage(100, DamageType.PURE);
+                    return burn;
+                }, 11, 45);
+
+        Zenith = new Weapon("Zenith",
+                IEntity ->
+                {
+                    int maxPain = 0;
+                    for(int x = 0; x < 7; x++)
+                    {
+                        maxPain += IEntity.takeDamage(650, DamageType.PHYSICAL);
+                    }
+
+                    return maxPain;
+                },
+                IEntity ->
+                {
+                    raise("Zenith - [It has to be this way]");
+                    int maxPain = 0;
+                    for(int x = 0; x < 21; x++)
+                    {
+                        maxPain += IEntity.takeDamage(100, DamageType.MAGIC);
+                    }
+
+                    return maxPain;
+                }, 13, 30);
+
+        ChiXiao = new Weapon("Chi Xiao",
+                IEntity ->
+                {
+                    raise("Chi Xiao - [Dual Strike]");
+                    int total = 0;
+                    total += IEntity.takeDamage(500, DamageType.PHYSICAL);
+                    total += IEntity.takeDamage(500, DamageType.PHYSICAL);
+                    return total;
+                },
+                IEntity ->
+                {
+                    int total = 0;
+
+                    raise("Chi Xiao - [Unsheathe]");
+
+                    total += IEntity.takeDamage(800, DamageType.MAGIC);
+                    total += IEntity.takeDamage(800, DamageType.PHYSICAL);
+                    total += IEntity.takeDamage(800, DamageType.PURE);
+
+                    return total;
+                }, 16, 55);
+
+        YingXiao = new Weapon("Ying Xiao",
+                IEntity ->
+                {
+                    raise("Ying Xiao - [Dual Strike]");
+                    int total = 0;
+                    total += IEntity.takeDamage(500, DamageType.MAGIC);
+                    total += IEntity.takeDamage(500, DamageType.MAGIC);
+                    return total;
+                },
+                IEntity ->
+                {
+                    raise("Ying Xiao - [Shadowless]");
+                    int total = 0;
+
+                    for(int x = 0; x < 10; x++)
+                    {
+                        total += IEntity.takeDamage(750, DamageType.PHYSICAL);
+                    }
+                    raise("Slash!");
+                    total += IEntity.takeDamage(1000, DamageType.PURE);
+
+                    return total;
+                }, 16, 60);
 
         // Register event handler
         this.addEventHandler(MasterEventHandler.masterEventHandler);

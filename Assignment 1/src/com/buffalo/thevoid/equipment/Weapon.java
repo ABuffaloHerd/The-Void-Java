@@ -14,7 +14,7 @@ public class Weapon extends AbstractWeapon
     public final int spCost;
     public final boolean hasSpecialAttack; // extra insurance against game breaking bullshit
 
-    public Weapon(String name, @NonNull Function<IEntity, Integer> standardAttackMethod, Function<IEntity, Integer> specialAttackMethod, int levelRequired, Integer spCost)
+    public Weapon(String name, @NonNull Function<IEntity, Integer> standardAttackMethod, Function<IEntity, Integer> specialAttackMethod, int levelRequired, int spCost)
     {
         super(name, standardAttackMethod, levelRequired);
         this.specialAttackMethod = specialAttackMethod;
