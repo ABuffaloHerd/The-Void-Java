@@ -1,5 +1,6 @@
 package com.buffalo.thevoid.main;
 
+import com.buffalo.thevoid.equipment.SpellList;
 import com.buffalo.thevoid.equipment.WeaponList;
 import com.buffalo.thevoid.event.GameEvent;
 import com.buffalo.thevoid.event.IEventHandler;
@@ -33,9 +34,10 @@ public class Program implements IEventPublisher
         program.addEventHandler(manager);
         program.logOutputHandler.add(LogEventHandler.Logger);
 
-        // Instantiate the boss and weapons
+        // Instantiate the boss, weapons and spells
         new BossList();
         new WeaponList();
+        new SpellList();
 
         int selection;
 
