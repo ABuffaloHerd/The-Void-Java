@@ -68,3 +68,7 @@ Logged event: New Game
 Logged event: Save Game
 Logged event: Save Game
 Logged event: Load Game
+Logged event: New Game
+Logged event: Shop
+Logged event: New Game
+Logged event: Save Game
