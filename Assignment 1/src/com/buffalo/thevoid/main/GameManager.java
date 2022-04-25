@@ -1,6 +1,7 @@
 package com.buffalo.thevoid.main;
 
 import com.buffalo.thevoid.entity.*;
+import com.buffalo.thevoid.equipment.SpellList;
 import com.buffalo.thevoid.equipment.WeaponList;
 import com.buffalo.thevoid.event.GameEvent;
 import com.buffalo.thevoid.event.IEventHandler;
@@ -31,7 +32,7 @@ public class GameManager implements IEventHandler<GameEvent>
             case NEWGAME ->
                     {
                         player = NewGame.newPlayer();
-                        playerLoaded = player != null;
+                        playerLoaded = true;
                     }
             case LOADGAME ->
                     {
@@ -59,6 +60,9 @@ public class GameManager implements IEventHandler<GameEvent>
                     { // This is short enough to include the wait.
                         if(WeaponList.unlockWeapon())
                             System.out.println("New weapon unlocked!");
+
+                        if(SpellList.unlockSpell())
+                            System.out.println("New spell unlocked!");
                         
                         TextHandler.wait(1000);
                     }
@@ -127,6 +131,37 @@ public class GameManager implements IEventHandler<GameEvent>
         }
 
         TextHandler.wait(1000);
+
+        // Print spells that are unlocked
+        unlocked = 0; // reset
+        counter = 0; // reset
+
+        System.out.printf("%sSpells%s\n\n", ConsoleColours.ANSI_GREEN_BACKGROUND, ConsoleColours.TEXT_RESET);
+        System.out.printf("Currently equipped: %s%s%s\n", ConsoleColours.TEXT_BLUE, player.getSpell().name, ConsoleColours.TEXT_RESET);
+        System.out.println("The following spells are available:");
+        System.out.printf("%s[Index - Name]%s\n\n", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET);
+
+        for (var s : SpellList.SpellData)
+        {
+            if (s.getItem2()) // If it is unlocked
+            {
+                System.out.printf("%d - %s | Level required: %d\n", counter, s.getItem1().name, s.getItem1().levelRequired);
+                unlocked++;
+                counter++;
+            }
+        }
+
+        // This also has the same issue as the weapon selection
+        selection = TextHandler.validInt("Choose a spell via index.", unlocked - 1, 0);
+
+        // Check level
+        if (SpellList.SpellData.get(selection).getItem1().levelRequired > player.getLevel())
+            System.out.println("Your level is too low!");
+        else
+        {
+            player.setSpell(SpellList.SpellData.get(selection).getItem1()); // Set spell
+            System.out.printf("Equipped %s%s%s!\n", ConsoleColours.TEXT_BLUE, player.getSpell().name, ConsoleColours.TEXT_RESET);
+        }
     }
 
     /**
@@ -450,7 +485,7 @@ public class GameManager implements IEventHandler<GameEvent>
                 break;
             case 3:
                 int amount = player.heal();
-                if (amount == 0)
+                if (amount == 0) // Todo: Replace with exception
                 {
                     System.out.println("You don't have enough mana!");
                     TextHandler.wait(2000);
