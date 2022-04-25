@@ -2,6 +2,8 @@ package com.buffalo.thevoid.main;
 
 import com.buffalo.thevoid.data.Config;
 import com.buffalo.thevoid.entity.Player;
+import com.buffalo.thevoid.equipment.Spell;
+import com.buffalo.thevoid.equipment.SpellList;
 import com.buffalo.thevoid.equipment.Weapon;
 import com.buffalo.thevoid.equipment.WeaponList;
 
@@ -15,6 +17,7 @@ class NewGame
 {
     // Get the first weapon regardless of whether it's been set to unlocked or not.
     private static final Weapon defaultWeapon = WeaponList.WeaponData.get(0).getItem1();
+    private static final Spell defaultSpell = SpellList.SpellData.get(0).getItem1();
 
     public static Player newPlayer()
     {
@@ -36,7 +39,7 @@ class NewGame
 
         return new Player(name, Config.START_HEALTH, Config.START_MANA,
                 Config.START_DEFENSE, Config.START_RESISTANCE,
-                defaultWeapon,
+                defaultWeapon, defaultSpell,
                 Config.KILLS_TO_LEVEL_UP, Config.START_LEVEL);
     }
 
@@ -44,7 +47,7 @@ class NewGame
     {
         // If any of these variables are not set, then the catch will be triggered.
         String name = "";
-        int HP = 0, MP = 0, DEF = 0, RES = 0, Level = 0, Kills = 0, WeaponsUnlocked = 0;
+        int HP = 0, MP = 0, DEF = 0, RES = 0, Level = 0, Kills = 0, WeaponsUnlocked = 0, SpellsUnlocked = 0;
 
         try(BufferedReader br = new BufferedReader(new FileReader(Config.cwd + "/resources/save/player.dat")))
         {
@@ -62,16 +65,19 @@ class NewGame
                     case "Level" -> Level = Integer.parseInt(split[1]);
                     case "KillCount" -> Kills = Integer.parseInt(split[1]);
                     case "WeaponsUnlocked" -> WeaponsUnlocked = Integer.parseInt(split[1]);
+                    case "SpellsUnlocked" -> SpellsUnlocked = Integer.parseInt(split[1]);
                 }
             }
 
             // Unlock weapons
             for(int x = 0; x < WeaponsUnlocked; x++)
-            {
                 WeaponList.unlockWeapon();
-            }
 
-            return new Player(name, HP, MP, DEF, RES, Kills, Level, Config.KILLS_TO_LEVEL_UP, defaultWeapon);
+            // Unlock spells
+            for(int x = 0; x < SpellsUnlocked; x++)
+                SpellList.unlockSpell();
+
+            return new Player(name, HP, MP, DEF, RES, Kills, Level, Config.KILLS_TO_LEVEL_UP, defaultWeapon, defaultSpell);
         }
         catch(Exception e)
         {
