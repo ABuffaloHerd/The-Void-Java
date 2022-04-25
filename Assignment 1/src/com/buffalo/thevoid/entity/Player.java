@@ -1,5 +1,6 @@
 package com.buffalo.thevoid.entity;
 
+import com.buffalo.thevoid.equipment.Spell;
 import com.buffalo.thevoid.equipment.Weapon;
 import com.buffalo.thevoid.statusbars.ProgressBar;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class Player extends Entity
     private @Getter int level;
     private @Getter ProgressBar magicBar; // Remember to print this in battles.
     private @Getter @Setter Weapon weapon;
+    private @Getter @Setter Spell spell;
     private @Getter int killCount; // Increments when you kill an enemy. Getter is only for saving.
 
     // NO GETTERS ALLOWED
@@ -47,19 +49,20 @@ public class Player extends Entity
     }
 
     // New constructor. uses the old one.
-    public Player(String name, int MaxHP, int MaxMP, int def, int res, Weapon weapon, int killsToLevel, int level)
+    public Player(String name, int MaxHP, int MaxMP, int def, int res, Weapon weapon, Spell spell, int killsToLevel, int level)
     {
         this(name, MaxHP, MaxMP, def, res, weapon);
         this.killsToLevel = killsToLevel;
+        this.spell = spell;
 
         // Overwrite level regardless.
         this.level = level;
     }
 
     // Constructor for when you load a player
-    public Player(String name, int MaxHP, int MaxMP, int DEF, int RES, int killCount, int level, int killsToLevel, Weapon weapon)
+    public Player(String name, int MaxHP, int MaxMP, int DEF, int RES, int killCount, int level, int killsToLevel, Weapon weapon, Spell spell)
     {
-        this(name, MaxHP, MaxMP, DEF, RES, weapon, killsToLevel, level);
+        this(name, MaxHP, MaxMP, DEF, RES, weapon, spell, killsToLevel, level);
         this.killCount = killCount;
     }
 
