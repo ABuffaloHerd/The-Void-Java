@@ -2,6 +2,7 @@ package com.buffalo.thevoid.io;
 
 import com.buffalo.thevoid.data.Config;
 import com.buffalo.thevoid.entity.Player;
+import com.buffalo.thevoid.equipment.SpellList;
 import com.buffalo.thevoid.equipment.WeaponList;
 
 import java.io.*;
@@ -32,6 +33,7 @@ public class FileHandler
         catch (FileNotFoundException e)
         {
             System.out.println("Unable to read " + bossname + "'s file.");
+            System.out.println(Config.cwd + "/resources/" + bossname + ".txt");
             return null;
         }
         catch (ArrayIndexOutOfBoundsException ignore)
@@ -72,6 +74,7 @@ public class FileHandler
         catch (IOException e)
         {
             System.out.println("Unable to read config file.");
+            System.out.println(Config.cwd + "/resources/config.cfg");
             System.exit(-1);
         }
 
@@ -90,13 +93,20 @@ public class FileHandler
         // Count weapons unlocked
         int weaponsUnlocked = 0;
         for(var v: WeaponList.WeaponData)
-        {
-            if(v.getItem2())
+            if (v.getItem2())
                 weaponsUnlocked++;
-        }
+
+        // Count spells unlocked
+        int spellsUnlocked = 0;
+        for(var v: SpellList.SpellData)
+            if(v.getItem2())
+                spellsUnlocked++;
 
         // Compensating for wooden sword being unlocked at the start.
         weaponsUnlocked -= 1;
+
+        // Compensating for fireball being unlocked at the start.
+        spellsUnlocked -= 1;
 
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(Config.cwd + "/resources/save/player.dat")))
         {
@@ -108,6 +118,7 @@ public class FileHandler
             bw.write("DEF=" + p.getDEF() + "\n");
             bw.write("RES=" + p.getRES() + "\n");
             bw.write("WeaponsUnlocked=" + weaponsUnlocked + "\n");
+            bw.write("SpellsUnlocked=" + spellsUnlocked + "\n");
         }
         catch (IOException e)
         {
