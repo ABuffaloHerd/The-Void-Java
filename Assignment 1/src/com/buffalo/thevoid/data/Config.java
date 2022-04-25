@@ -16,7 +16,9 @@ public class Config
     public static final int KILLS_TO_LEVEL_UP;
     public static final int START_DEFENSE;
     public static final int START_RESISTANCE;
-    public static final String cwd = System.getProperty("user.dir"); // Current working directory
+
+    // PATH PROBLEMS? THIS IS WHERE THE PROBLEM IS
+    public static final String cwd = System.getProperty("user.dir") + "/Assignment 1"; // Current working directory
 
     static
     {
