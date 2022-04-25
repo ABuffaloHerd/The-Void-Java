@@ -2,7 +2,6 @@ package com.buffalo.thevoid.equipment;
 
 import com.buffalo.thevoid.data.Tuple;
 import com.buffalo.thevoid.entity.DamageType;
-import com.buffalo.thevoid.entity.IEntity;
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
 
@@ -29,6 +28,7 @@ public class SpellList implements IEventPublisher
     // Non-static initializer
     {
         // Prevent duplicates when initializer is run.
+        System.out.println("Initializing SpellList...");
         SpellData = new ArrayList<>();
 
         Fireball = new Spell("Fireball",
@@ -36,7 +36,7 @@ public class SpellList implements IEventPublisher
                 {
                     raise("Magic!");
                     return IEntity.takeDamage(100, DamageType.MAGIC);
-                }, 1, 40, 0.0f);
+                }, 0, 40, 0.0f);
 
         Lightning = new Spell("Lightning Strike",
                 IEntity ->
@@ -121,12 +121,26 @@ public class SpellList implements IEventPublisher
                 }, 15, 200, 0.01f);
 
         SpellData.add(new Tuple<>(Fireball, true));
-        SpellData.add(new Tuple<>(Lightning, true));
-        SpellData.add(new Tuple<>(Tornado, true));
-        SpellData.add(new Tuple<>(ZaWarudo, true));
-        SpellData.add(new Tuple<>(Railgun, true));
-        SpellData.add(new Tuple<>(WarpSnipe, true));
-        SpellData.add(new Tuple<>(MasterSpark, true));
+        SpellData.add(new Tuple<>(Lightning, false));
+        SpellData.add(new Tuple<>(Tornado, false));
+        SpellData.add(new Tuple<>(ZaWarudo, false));
+        SpellData.add(new Tuple<>(Railgun, false));
+        SpellData.add(new Tuple<>(WarpSnipe, false));
+        SpellData.add(new Tuple<>(MasterSpark, false));
+    }
+
+    public static boolean unlockSpell()
+    {
+        for (var v: SpellList.SpellData)
+        {
+            if(!v.getItem2())
+            {
+                v.setItem2(true);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
