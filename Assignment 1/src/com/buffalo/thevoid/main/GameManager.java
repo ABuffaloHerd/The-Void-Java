@@ -190,25 +190,7 @@ public class GameManager implements IEventHandler<GameEvent>
         {
             printHeader(true);
 
-            battleMenu(e);
-            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1);
-
-            // PLAYER ACTION SECTION
-            try
-            {
-                playerAction(choice, e);
-            }
-            catch (InsufficientManaException ex)
-            {
-                System.out.println(ex.message);
-            }
-            catch (ResetBattleLoopException ex)
-            {
-                continue;
-            }
-
-            if (e.isDead()) // If the enemy is dead reevaluate the loop
-                continue;
+            if (battleCycle(e)) continue;
 
             // ENEMY ACTION SECTION
             // This is just a dummy that does nothing but attack so...
@@ -233,6 +215,31 @@ public class GameManager implements IEventHandler<GameEvent>
             System.out.println(GameEvent.PLAYERWIN.text);
             handleEvent(this, GameEvent.PLAYERWIN);
         }
+    }
+
+    private boolean battleCycle(Entity e)
+    {
+        battleMenu(e);
+        int choice = TextHandler.validInt("Enter number to choose action.", 6, 1);
+
+        // PLAYER ACTION SECTION
+        try
+        {
+            playerAction(choice, e);
+        }
+        catch (InsufficientManaException ex)
+        {
+            System.out.println(ex.message);
+            TextHandler.wait(1000);
+            return true;
+        }
+        catch (ResetBattleLoopException ex)
+        {
+            return true;
+        }
+
+        // If the enemy is dead reevaluate the loop
+        return e.isDead();
     }
 
     /**
@@ -283,28 +290,31 @@ public class GameManager implements IEventHandler<GameEvent>
             System.out.printf("%s%s%s\n", ConsoleColours.TEXT_BLUE, boss.randomQuote(), ConsoleColours.TEXT_RESET);
             TextHandler.wait(1000);
 
-            battleMenu(boss);
-            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1); // reuse the choice variable
-
-            // PLAYER ACTION SECTION
-            try
-            {
-                playerAction(choice, boss);
-            }
-            catch (InsufficientManaException ex)
-            {
-                System.out.println(ex.message);
-            }
-            catch (ResetBattleLoopException ex)
-            {
-                continue;
-            }
-
-            if (boss.isDead()) // If the enemy is dead after the player's action reevaluate the loop
-                continue;
+//            battleMenu(boss);
+//            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1); // reuse the choice variable
+//
+//            // PLAYER ACTION SECTION
+//            try
+//            {
+//                playerAction(choice, boss);
+//            }
+//            catch (InsufficientManaException ex)
+//            {
+//                System.out.println(ex.message);
+//                TextHandler.wait(1000);
+//                continue;
+//            }
+//            catch (ResetBattleLoopException ex)
+//            {
+//                continue;
+//            }
+//
+//            if (boss.isDead()) // If the enemy is dead after the player's action reevaluate the loop
+//                continue;
+            if(battleCycle(boss)) continue;
 
             // ENEMY ACTION SECTION
-            // Right the boss is going to attack UNLESS the special attack counter is 5.
+            // Right the boss is going to use special attack UNLESS the special attack counter is 5.
             if (toSpecial == 5)
             {
                 System.out.printf("%s is unleashing a special attack!\nThis is going to hurt...\n", boss.name);
@@ -394,25 +404,28 @@ public class GameManager implements IEventHandler<GameEvent>
             System.out.printf("%s%s%s\n", ConsoleColours.TEXT_BLUE, boss.randomQuote(), ConsoleColours.TEXT_RESET);
             TextHandler.wait(1000);
 
-            battleMenu(boss);
-            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1); // reuse the choice variable
-
-            // PLAYER ACTION SECTION
-            try
-            {
-                playerAction(choice, boss);
-            }
-            catch (InsufficientManaException ex)
-            {
-                System.out.println(ex.message);
-            }
-            catch (ResetBattleLoopException ex)
-            {
-                continue;
-            }
-
-            if (boss.isDead()) // If the enemy is dead reevaluate the loop
-                continue;
+//            battleMenu(boss);
+//            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1); // reuse the choice variable
+//
+//            // PLAYER ACTION SECTION
+//            try
+//            {
+//                playerAction(choice, boss);
+//            }
+//            catch (InsufficientManaException ex)
+//            {
+//                System.out.println(ex.message);
+//                TextHandler.wait(1000);
+//                continue;
+//            }
+//            catch (ResetBattleLoopException ex)
+//            {
+//                continue;
+//            }
+//
+//            if (boss.isDead()) // If the enemy is dead reevaluate the loop
+//                continue;
+            if(battleCycle(boss)) continue;
 
             // ENEMY ACTION SECTION
             // Right the boss is going to attack UNLESS the special attack counter is 5.
@@ -429,7 +442,7 @@ public class GameManager implements IEventHandler<GameEvent>
             else if (toSpecial == 10)
             {
                 // second special attack
-                System.out.printf("%sPhase 3: %s is unleashing a special attack!%s\nThis is going to hurt...\n", ConsoleColours.TEXT_YELLOW, boss.name, ConsoleColours.TEXT_RESET);
+                System.out.printf("%sPhase 3: %s is unleashing a special attack!%s\nPrepare for a lot of stinging...\n", ConsoleColours.TEXT_YELLOW, boss.name, ConsoleColours.TEXT_RESET);
                 TextHandler.wait(1000);
 
                 // Do the special attack
@@ -438,7 +451,7 @@ public class GameManager implements IEventHandler<GameEvent>
             else if (toSpecial == 15 || toSpecial > 20)
             {
                 // third special attack
-                System.out.printf("%sPhase 4: %s is unleashing a special attack!%s\nThis is going to hurt...\n", ConsoleColours.TEXT_YELLOW, boss.name, ConsoleColours.TEXT_RESET);
+                System.out.printf("%sPhase 4: %s is unleashing a special attack!%s\n😬...\n", ConsoleColours.TEXT_YELLOW, boss.name, ConsoleColours.TEXT_RESET);
                 TextHandler.wait(1000);
 
                 // Do the special attack
@@ -520,15 +533,8 @@ public class GameManager implements IEventHandler<GameEvent>
                 player.isDefending = true;
                 break;
             case 3:
-                int amount = player.heal();
-                if (amount == 0) // Todo: Replace with exception
-                {
-                    throw new InsufficientManaException("You don't have enough mana to cast this!");
-                }
-                else
-                {
-                    System.out.printf("You healed %d health!\n", amount);
-                }
+                int amount = player.heal(); // Throws exception if not enough mana
+                System.out.printf("You healed %d health!\n", amount);
             case 4:
                 // Check if player has enough mana
                 if (player.getSpell().cost > player.getMP())
@@ -551,6 +557,7 @@ public class GameManager implements IEventHandler<GameEvent>
                     {
                         System.out.println("Casting spell!");
                         System.out.println("Dealt " + player.getSpell().use(e) + " damage");
+                        player.setMP(player.getMP() - player.getSpell().cost); // Subtract mana
                     }
                 }
             case 5: // Why did i include this option it's useless
