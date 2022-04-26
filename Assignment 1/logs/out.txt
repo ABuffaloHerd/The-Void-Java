@@ -74,3 +74,9 @@ Logged event: New Game
 Logged event: Save Game
 Logged event: Load Game
 Logged event: Fight!
+Logged event: Load Game
+Logged event: Resupply
+Logged event: Load Game
+Logged event: Load Game
+Logged event: Load Game
+Logged event: Fight!

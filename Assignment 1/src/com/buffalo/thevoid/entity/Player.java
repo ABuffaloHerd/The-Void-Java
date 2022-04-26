@@ -2,6 +2,7 @@ package com.buffalo.thevoid.entity;
 
 import com.buffalo.thevoid.equipment.Spell;
 import com.buffalo.thevoid.equipment.Weapon;
+import com.buffalo.thevoid.exception.InsufficientManaException;
 import com.buffalo.thevoid.statusbars.ProgressBar;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.Random;
 public class Player extends Entity
 {
     private @Getter @Setter int MaxMP;
-    private @Getter @Setter int MP;
+    private @Getter int MP; // Manual setter
     private @Getter int level;
     private @Getter ProgressBar magicBar; // Remember to print this in battles.
     private @Getter @Setter Weapon weapon;
@@ -108,12 +109,12 @@ public class Player extends Entity
     }
 
     // Costs 20 MP, heals 25% of max hp
-    public int heal()
+    public int heal() throws InsufficientManaException
     {
         int amount;
 
         if ((this.MP - 20) < 0)
-            return 0;
+            throw new InsufficientManaException("Not enough mana to heal.");
         else
         {
             this.MP -= 20;
@@ -167,6 +168,12 @@ public class Player extends Entity
         this.MP = this.MaxMP;
         this.HP = this.MaxHP;
         updateHealthBar();
+        updateMagicBar();
+    }
+
+    public void setMP(int MP)
+    {
+        this.MP = MP;
         updateMagicBar();
     }
 
