@@ -5,11 +5,16 @@ import com.buffalo.thevoid.equipment.SpellList;
 import com.buffalo.thevoid.equipment.WeaponList;
 import com.buffalo.thevoid.event.GameEvent;
 import com.buffalo.thevoid.event.IEventHandler;
+import com.buffalo.thevoid.exception.InsufficientManaException;
+import com.buffalo.thevoid.exception.ResetBattleLoopException;
 import com.buffalo.thevoid.factory.BossList;
 import com.buffalo.thevoid.factory.MonsterFactory;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.FileHandler;
 import com.buffalo.thevoid.io.TextHandler;
+
+import java.sql.SQLOutput;
+import java.util.Random;
 
 /**
  * This bad boy contains all game functions, while the actual loop is handled by the main function.
@@ -186,11 +191,21 @@ public class GameManager implements IEventHandler<GameEvent>
             printHeader(true);
 
             battleMenu(e);
-            int choice = TextHandler.validInt("Enter number to choose action.", 5, 1);
+            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1);
 
             // PLAYER ACTION SECTION
-            if(playerAction(choice, e))
+            try
+            {
+                playerAction(choice, e);
+            }
+            catch (InsufficientManaException ex)
+            {
+                System.out.println(ex.message);
+            }
+            catch (ResetBattleLoopException ex)
+            {
                 continue;
+            }
 
             if (e.isDead()) // If the enemy is dead reevaluate the loop
                 continue;
@@ -269,11 +284,21 @@ public class GameManager implements IEventHandler<GameEvent>
             TextHandler.wait(1000);
 
             battleMenu(boss);
-            int choice = TextHandler.validInt("Enter number to choose action.", 5, 1); // reuse the choice variable
+            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1); // reuse the choice variable
 
             // PLAYER ACTION SECTION
-            if(playerAction(choice, boss))
+            try
+            {
+                playerAction(choice, boss);
+            }
+            catch (InsufficientManaException ex)
+            {
+                System.out.println(ex.message);
+            }
+            catch (ResetBattleLoopException ex)
+            {
                 continue;
+            }
 
             if (boss.isDead()) // If the enemy is dead after the player's action reevaluate the loop
                 continue;
@@ -370,11 +395,21 @@ public class GameManager implements IEventHandler<GameEvent>
             TextHandler.wait(1000);
 
             battleMenu(boss);
-            int choice = TextHandler.validInt("Enter number to choose action.", 5, 1); // reuse the choice variable
+            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1); // reuse the choice variable
 
             // PLAYER ACTION SECTION
-            if(playerAction(choice, boss))
+            try
+            {
+                playerAction(choice, boss);
+            }
+            catch (InsufficientManaException ex)
+            {
+                System.out.println(ex.message);
+            }
+            catch (ResetBattleLoopException ex)
+            {
                 continue;
+            }
 
             if (boss.isDead()) // If the enemy is dead reevaluate the loop
                 continue;
@@ -461,14 +496,15 @@ public class GameManager implements IEventHandler<GameEvent>
         System.out.println("1 - Fight!");
         System.out.println("2 - Defend!");
         System.out.println("3 - Heal! (20 MP)");
-        System.out.println("4 - Nothing!"); // The shell has spoken!
-        System.out.println("5 - Surrender..");
+        System.out.printf ("4 - Magic!(%d MP)\n", player.getSpell().cost);
+        System.out.println("5 - Nothing!"); // The shell has spoken!
+        System.out.println("6 - Surrender..");
     }
 
     // Helper method to remove duplicated code
     // Returns true if the player doesn't do anything that changes the gamestate
     // i.e heal with insufficient mana
-    private boolean playerAction(int choice, Entity e)
+    private void playerAction(int choice, Entity e) throws InsufficientManaException, ResetBattleLoopException
     {
         // PLAYER ACTION SECTION
         // Make sure no defense is applied
@@ -487,21 +523,42 @@ public class GameManager implements IEventHandler<GameEvent>
                 int amount = player.heal();
                 if (amount == 0) // Todo: Replace with exception
                 {
-                    System.out.println("You don't have enough mana!");
-                    TextHandler.wait(2000);
-                    return true;
+                    throw new InsufficientManaException("You don't have enough mana to cast this!");
                 }
                 else
                 {
                     System.out.printf("You healed %d health!\n", amount);
                 }
-            case 4: // Why did i include this option it's useless
+            case 4:
+                // Check if player has enough mana
+                if (player.getSpell().cost > player.getMP())
+                {
+                    throw new InsufficientManaException("You don't have enough mana to cast this!");
+                }
+                else
+                {
+                    // Cast spell
+                    System.out.println("You cast " + player.getSpell().name + "!");
+                    // Check for failure
+                    float hit = new Random().nextFloat(0, 1);
+                    if (hit < player.getSpell().failrate)
+                    {
+                        System.out.println("Ah whoops.. You should've paid more attention in wizard school!");
+                        TextHandler.wait(1000);
+                        System.out.println("Took " + player.getSpell().use(player) + " damage");
+                    }
+                    else
+                    {
+                        System.out.println("Casting spell!");
+                        System.out.println("Dealt " + player.getSpell().use(e) + " damage");
+                    }
+                }
+            case 5: // Why did i include this option it's useless
                 break;
-            case 5:
+            case 6:
                 player.takeDamage(100000, DamageType.PURE);
+                throw new ResetBattleLoopException();
         }
-
-        return false;
     }
 
     // Do i need a new event just to run this?
