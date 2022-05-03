@@ -1,3 +1,6 @@
 out/
-Assignment 1/resources/save/player.dat
-Assignment 1/logs/out.txt
+resources/save/player.dat
+logs/out.txt
+/TheVoid/target/
+.idea
+.iml

@@ -18,7 +18,7 @@ public class Config
     public static final int START_RESISTANCE;
 
     // PATH PROBLEMS? THIS IS WHERE THE PROBLEM IS
-    public static final String cwd = System.getProperty("user.dir") + "/Assignment 1"; // Current working directory
+    public static final String cwd = System.getProperty("user.dir"); // Current working directory
 
     static
     {
