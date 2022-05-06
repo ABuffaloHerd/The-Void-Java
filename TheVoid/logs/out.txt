@@ -1,0 +1,82 @@
+Logged event: New Game
+Logged event: New Game
+Logged event: New Game
+Logged event: Fight!
+Logged event: Resupply
+Logged event: Resupply
+Logged event: New Game
+Logged event: New Game
+Logged event: Fight!
+Logged event: Resupply
+Logged event: New Game
+Logged event: New Game
+Logged event: New Game
+Logged event: Fight!
+Logged event: Resupply
+Logged event: Fight!
+Logged event: Resupply
+Logged event: New Game
+Logged event: Boss battle
+Logged event: New Game
+Logged event: Fight!
+Logged event: Resupply
+Logged event: Fight!
+Logged event: New Game
+Logged event: Fight!
+Logged event: New Game
+Logged event: New Game
+Logged event: New Game
+Logged event: Fight!
+Logged event: New Game
+Logged event: Fight!
+Logged event: New Game
+Logged event: Boss battle
+Logged event: New Game
+Logged event: Fight!
+Logged event: New Game
+Logged event: New Game
+Logged event: Boss battle
+Logged event: New Game
+Logged event: Boss battle
+Logged event: New Game
+Logged event: Boss battle
+Logged event: New Game
+Logged event: New Game
+Logged event: Fight!
+Logged event: New Game
+Logged event: Fight!
+Logged event: New Game
+Logged event: Fight!
+Logged event: Resupply
+Logged event: New Game
+Logged event: New Game
+Logged event: Shop
+Logged event: New Game
+Logged event: Shop
+Logged event: Fight!
+Logged event: New Game
+Logged event: Shop
+Logged event: Fight!
+Logged event: New Game
+Logged event: Shop
+Logged event: Fight!
+Logged event: New Game
+Logged event: Shop
+Logged event: Fight!
+Logged event: Load Game
+Logged event: New Game
+Logged event: Save Game
+Logged event: Save Game
+Logged event: Load Game
+Logged event: New Game
+Logged event: Shop
+Logged event: New Game
+Logged event: Save Game
+Logged event: Load Game
+Logged event: Fight!
+Logged event: Load Game
+Logged event: Resupply
+Logged event: Load Game
+Logged event: Load Game
+Logged event: Load Game
+Logged event: Fight!
