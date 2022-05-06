@@ -3,4 +3,4 @@ resources/save/player.dat
 logs/out.txt
 /TheVoid/target/
 .idea
-.iml
+*.iml
