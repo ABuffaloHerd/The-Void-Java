@@ -6,7 +6,6 @@ import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.factory.BossList;
 
 // One class to print all boss and weapon outputs.
-// masterEventHandler probably isn't the best name for it.
 public class ConsoleEventHandler implements IEventHandler<String>
 {
     public ConsoleEventHandler()
