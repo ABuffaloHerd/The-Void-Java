@@ -4,6 +4,7 @@ import com.buffalo.thevoid.data.Tuple;
 import com.buffalo.thevoid.entity.DamageType;
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
+import com.buffalo.thevoid.io.ConsoleEventHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -119,6 +120,9 @@ public class SpellList implements IEventPublisher
                     total += IEntity.takeDamage(500, DamageType.PURE);
                     return total;
                 }, 15, 200, 0.01f);
+
+        // Register new event handler
+        this.addEventHandler(new ConsoleEventHandler());
 
         SpellData.add(new Tuple<>(Fireball, true));
         SpellData.add(new Tuple<>(Lightning, false));

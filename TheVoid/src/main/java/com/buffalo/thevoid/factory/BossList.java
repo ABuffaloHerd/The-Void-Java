@@ -8,7 +8,7 @@ import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.FileHandler;
-import com.buffalo.thevoid.io.MasterEventHandler;
+import com.buffalo.thevoid.io.ConsoleEventHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -180,8 +180,8 @@ public class BossList implements IEventPublisher
         BossData.add(new Tuple3<>(CrackerBrothers, false, 11));
         BossData.add(new Tuple3<>(JerryChen, false, 15));
 
-        // Register the master event handler
-        addEventHandler(MasterEventHandler.masterEventHandler);
+        // Register an event handler
+        addEventHandler(new ConsoleEventHandler());
     }
 
     @Override

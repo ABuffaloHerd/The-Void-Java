@@ -82,3 +82,8 @@ Logged event: Load Game
 Logged event: Fight!
 Logged event: New Game
 Logged event: Shop
+Logged event: Load Game
+Logged event: Fight!
+Logged event: Load Game
+Logged event: Load Game
+Logged event: Fight!

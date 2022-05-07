@@ -2,11 +2,10 @@ package com.buffalo.thevoid.equipment;
 
 import com.buffalo.thevoid.data.Tuple;
 import com.buffalo.thevoid.entity.DamageType;
-import com.buffalo.thevoid.entity.IEntity;
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
 import com.buffalo.thevoid.io.ConsoleColours;
-import com.buffalo.thevoid.io.MasterEventHandler;
+import com.buffalo.thevoid.io.ConsoleEventHandler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -209,7 +208,7 @@ public class WeaponList implements IEventPublisher
                 }, 16, 60);
 
         // Register event handler
-        this.addEventHandler(MasterEventHandler.masterEventHandler);
+        this.addEventHandler(new ConsoleEventHandler());
 
         // TODO: RESET ALL TO FALSE EXCEPT WOODEN SWORD BEFORE SUBMISSION
         WeaponData  = new ArrayList<>();
