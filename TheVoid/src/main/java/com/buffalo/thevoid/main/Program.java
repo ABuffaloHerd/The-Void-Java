@@ -6,6 +6,7 @@ import com.buffalo.thevoid.event.GameEvent;
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
 import com.buffalo.thevoid.factory.BossList;
+import com.buffalo.thevoid.gui.MainFrame;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.LogEventHandler;
 import com.buffalo.thevoid.io.TextHandler;
@@ -13,7 +14,7 @@ import com.buffalo.thevoid.io.TextHandler;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Program implements IEventPublisher
+public class Program implements IEventPublisher, IEventHandler<Integer>
 {
     // The event handlers for the program
     // This handles game events
@@ -21,18 +22,30 @@ public class Program implements IEventPublisher
     private final Set<IEventHandler<GameEvent>> gameEventHandler = new HashSet<>();
 
     // This handles events that are written to file.
-    private final Set<IEventHandler<String>> logOutputHandler = new HashSet<>(1);
+    // Now we can use the same handler to write to the gui log.
+    private final Set<IEventHandler<String>> logOutputHandler = new HashSet<>(2);
+
+    static Program program;
+    static GameManager manager;
 
     public static void main(String[] args)
     {
+        // Register gui
+        MainFrame mainframe = new MainFrame();
+
         // Initialize the game
         boolean gameRunning = true;
-        Program program = new Program();
-        GameManager manager = new GameManager();
+        program = new Program();
+        manager = new GameManager();
 
         // Register the log event handlers
         program.addEventHandler(manager);
         program.logOutputHandler.add(LogEventHandler.Logger);
+        program.logOutputHandler.add(mainframe.logPanel);
+
+        // Register this program as the event handler for the logPanel
+        // This will allow input from logPanel to be passed in here.
+        mainframe.logPanel.addEventHandler(program);
 
         // Instantiate the boss, weapons and spells
         new BossList();
@@ -67,31 +80,51 @@ public class Program implements IEventPublisher
             {
                 System.out.printf("%sYou must create a player first.\n", ConsoleColours.TEXT_RED);
                 System.out.printf("Select new game or load game to get started.%s", ConsoleColours.TEXT_RESET);
+                program.raise("You must create a player first.");
+                program.raise("Select new game or load game to get started.");
                 TextHandler.wait(1500);
                 continue;
             }
 
-            // raise events, transferring program flow to the game manager
-            switch (selection)
-            {
-                case 1 ->
-                {
-                    program.raise(GameEvent.NEWGAME);
-                    new BossList(); // Reset the boss and weapons by instantiating them again
-                    new WeaponList();
-                }
-                case 2 -> program.raise(GameEvent.LOADGAME);
-                case 3 -> program.raise(GameEvent.SAVEGAME);
-                case 4 -> program.raise(GameEvent.BATTLE);
-                case 5 -> program.raise(GameEvent.SHOP);
-                case 6 -> program.raise(GameEvent.BOSS);
-                case 7 -> program.raise(GameEvent.EXBOSS);
-                case 8 -> program.raise(GameEvent.RESUPPLY);
-                case 9 -> manager.showStats();
-                case 10 -> help();
-                case 11 -> gameRunning = false;
-            }
+            gameRunning = program.selectEvent(program, manager, selection);
         }
+    }
+
+    private boolean selectEvent(Program program, GameManager manager, int selection)
+    {
+        // raise events, transferring program flow to the game manager
+        // By extracting this method, handleEvent can also access this part of the code.
+
+        if(selection > 2 && !manager.isReady())
+        {
+            System.out.printf("%sYou must create a player first.\n", ConsoleColours.TEXT_RED);
+            System.out.printf("Select new game or load game to get started.%s", ConsoleColours.TEXT_RESET);
+            program.raise("You must create a player first.");
+            program.raise("Select new game or load game to get started.");
+            TextHandler.wait(1500);
+            return true;
+        }
+
+        switch (selection)
+        {
+            case 1 ->
+            {
+                program.raise(GameEvent.NEWGAME);
+                new BossList(); // Reset the boss and weapons by instantiating them again
+                new WeaponList();
+            }
+            case 2 -> program.raise(GameEvent.LOADGAME);
+            case 3 -> program.raise(GameEvent.SAVEGAME);
+            case 4 -> program.raise(GameEvent.BATTLE);
+            case 5 -> program.raise(GameEvent.SHOP);
+            case 6 -> program.raise(GameEvent.BOSS);
+            case 7 -> program.raise(GameEvent.EXBOSS);
+            case 8 -> program.raise(GameEvent.RESUPPLY);
+            case 9 -> manager.showStats();
+            case 10 -> help();
+            case 11 -> {return false;}
+        }
+        return true;
     }
 
     private static void help()
@@ -114,20 +147,33 @@ public class Program implements IEventPublisher
         // Doesn't need to be a set because it's a single handler, but it shows that it can be used for multiple handlers
         for (var m: gameEventHandler)
             m.handleEvent(this, event);
+    }
 
+    // Raise event to log output
+    private void raise(String text)
+    {
         for(var v: logOutputHandler)
-            v.handleEvent(this, event.text);
+            v.handleEvent(this, text);
     }
 
     @Override
+    @SuppressWarnings("unchecked") // shut
     public void addEventHandler(IEventHandler<?> e)
     {
         gameEventHandler.add((IEventHandler<GameEvent>) e);
     }
 
     @Override
+    @SuppressWarnings("unchecked") // shut
     public void removeEventHandler(IEventHandler<?> f)
     {
         gameEventHandler.add((IEventHandler<GameEvent>) f);
+    }
+
+    @Override
+    public void handleEvent(Object sender, Integer args)
+    {
+        System.out.println("Main program received event from " + sender + " with args: " + args);
+        selectEvent(program, manager, args);
     }
 }

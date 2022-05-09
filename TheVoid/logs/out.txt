@@ -87,3 +87,13 @@ Logged event: Fight!
 Logged event: Load Game
 Logged event: Load Game
 Logged event: Fight!
+Logged event: Load Game
+Logged event: New Game
+Logged event: New Game
+Logged event: New Game
+Logged event: New Game
+Logged event: Fight!
+Logged event: You must create a player first.
+Logged event: Select new game or load game to get started.
+Logged event: You must create a player first.
+Logged event: Select new game or load game to get started.
