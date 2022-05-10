@@ -25,8 +25,8 @@ public class Program implements IEventPublisher, IEventHandler<Integer>
     // Now we can use the same handler to write to the gui log.
     private final Set<IEventHandler<String>> logOutputHandler = new HashSet<>(2);
 
-    static Program program;
-    static GameManager manager;
+    public static Program program;
+    public static GameManager manager;
 
     public static void main(String[] args)
     {

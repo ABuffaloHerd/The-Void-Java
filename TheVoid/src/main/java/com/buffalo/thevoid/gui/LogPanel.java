@@ -66,7 +66,7 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         // This also means stuff the queue with empty messages
         for (int i = 0; i < maxEntries; i++)
         {
-            queue.add(new LogEntry(Integer.toString(i)));
+            queue.add(new LogEntry(""));
         }
 
         updateText();
