@@ -7,6 +7,7 @@ import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
 import com.buffalo.thevoid.factory.BossList;
 import com.buffalo.thevoid.gui.MainFrame;
+import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.LogEventHandler;
 import com.buffalo.thevoid.io.TextHandler;
@@ -27,25 +28,43 @@ public class Program implements IEventPublisher, IEventHandler<Integer>
 
     public static Program program;
     public static GameManager manager;
+    private static Mediator mediator;
+
+    // Set up mediator
+    static
+    {
+        mediator = new Mediator();
+    }
 
     public static void main(String[] args)
     {
-        // Register gui
-        MainFrame mainframe = new MainFrame();
-
         // Initialize the game
         boolean gameRunning = true;
         program = new Program();
         manager = new GameManager();
 
-        // Register the log event handlers
+        // Set up mediator
+        // This is done first so that when mainframe is created, program and manager are not null
+        Mediator.setProgram(program);
+        Mediator.setGameManager(manager);
+
+        // Register gui
+        MainFrame mainframe = new MainFrame();
+
+        // Set up remaining references in mediator.
+        Mediator.setMainFrame(mainframe);
+
+        // Register the game event handlers
         program.addEventHandler(manager);
+
+        // Register the log event handler
         program.logOutputHandler.add(LogEventHandler.Logger);
-        program.logOutputHandler.add(mainframe.logPanel);
+        program.logOutputHandler.add(Mediator.getMainFrame().logPanel);
 
         // Register this program as the event handler for the logPanel
         // This will allow input from logPanel to be passed in here.
-        mainframe.logPanel.addEventHandler(program);
+//        mainframe.logPanel.addEventHandler(program);
+        // MOVED TO MAINFRAME CONSTRUCTOR
 
         // Instantiate the boss, weapons and spells
         new BossList();

@@ -1,5 +1,6 @@
 package com.buffalo.thevoid.gui;
 
+import com.buffalo.thevoid.event.GameEvent;
 import com.buffalo.thevoid.main.GameManager;
 import com.buffalo.thevoid.main.Program;
 import lombok.Getter;
@@ -25,4 +26,19 @@ public class Mediator
     }
 
     public Mediator() {}
+
+    public void sendToLog(Object sender, String message)
+    {
+        mainFrame.logPanel.handleEvent(sender, message);
+    }
+
+    public void sendToGame(Object sender, GameEvent args)
+    {
+        gameManager.handleEvent(sender, args);
+    }
+
+    public void sendToProgram(Object sender, Integer args)
+    {
+        program.handleEvent(sender, args);
+    }
 }

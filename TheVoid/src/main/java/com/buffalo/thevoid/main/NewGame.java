@@ -27,16 +27,6 @@ class NewGame
         System.out.println("What is your name? ");
         name = s.nextLine();
 
-//        This was funny the first 10 times and now it's just annoying.
-//        System.out.printf("%sWhat is your quest?%s ", ConsoleColours.ANSI_BLACK_BACKGROUND, ConsoleColours.TEXT_RESET);
-//        s.next();
-//
-//        System.out.printf("%sWhat is your favourite colour?%s ", ConsoleColours.ANSI_BLACK_BACKGROUND, ConsoleColours.TEXT_RESET);
-//        s.next();
-//
-//        System.out.printf("%sWhat is the airspeed velocity of an unladen swallow?%s ", ConsoleColours.ANSI_BLACK_BACKGROUND, ConsoleColours.TEXT_RESET);
-//        s.next();
-
         return new Player(name, Config.START_HEALTH, Config.START_MANA,
                 Config.START_DEFENSE, Config.START_RESISTANCE,
                 defaultWeapon, defaultSpell,

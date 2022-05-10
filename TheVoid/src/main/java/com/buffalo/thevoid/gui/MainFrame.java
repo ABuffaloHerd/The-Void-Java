@@ -8,6 +8,8 @@ public class MainFrame extends JFrame
     public final JPanel mainPanel;
     public final LogPanel logPanel;
 
+    private final Mediator mediator;
+
     public MainFrame()
     {
         super("The Void");
@@ -24,6 +26,13 @@ public class MainFrame extends JFrame
         // Add managing main panel to frame
         mainPanel.add(logPanel, BorderLayout.EAST);
         add(mainPanel);
+
+        // Construct mediator
+        mediator = new Mediator();
+
+        // Register the program with the log panel
+        // Uses static reference rather than instance reference.
+        logPanel.addEventHandler(Mediator.getProgram());
 
         mainPanel.setVisible(true);
         logPanel.setVisible(true);
