@@ -12,6 +12,7 @@ import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.LogEventHandler;
 import com.buffalo.thevoid.io.TextHandler;
 
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,10 +50,23 @@ public class Program implements IEventPublisher, IEventHandler<Integer>
         Mediator.setGameManager(manager);
 
         // Register gui
-        MainFrame mainframe = new MainFrame();
+        final MainFrame[] mainframe = new MainFrame[1];
+
+        mainframe[0] = new MainFrame();
+
+        // Thread the gui.
+        Thread guiThread = new Thread(() ->
+        {
+            mainframe[0] = new MainFrame();
+        });
+        guiThread.start();
+
+        // waiting the main thread allows the gui to run and keep the reference.
+        // WIthout this the reference is null and the console is filled with red text.
+        TextHandler.wait(100);
 
         // Set up remaining references in mediator.
-        Mediator.setMainFrame(mainframe);
+        Mediator.setMainFrame(mainframe[0]);
 
         // Register the game event handlers
         program.addEventHandler(manager);

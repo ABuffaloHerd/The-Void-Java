@@ -6,6 +6,8 @@ import com.buffalo.thevoid.equipment.Spell;
 import com.buffalo.thevoid.equipment.SpellList;
 import com.buffalo.thevoid.equipment.Weapon;
 import com.buffalo.thevoid.equipment.WeaponList;
+import com.buffalo.thevoid.gui.LogPanel;
+import com.buffalo.thevoid.gui.Mediator;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -25,6 +27,8 @@ class NewGame
         Scanner s = new Scanner(System.in);
 
         System.out.println("What is your name? ");
+//        Mediator.getMainFrame().logPanel.write("What is your name? ");
+
         name = s.nextLine();
 
         return new Player(name, Config.START_HEALTH, Config.START_MANA,
