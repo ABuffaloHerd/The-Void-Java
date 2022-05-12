@@ -27,17 +27,22 @@ public class Mediator
 
     public Mediator() {}
 
-    public void sendToLog(Object sender, String message)
+    public static void clearLog()
+    {
+        mainFrame.logPanel.clear();
+    }
+
+    public static void sendToLog(Object sender, String message)
     {
         mainFrame.logPanel.handleEvent(sender, message);
     }
 
-    public void sendToGame(Object sender, GameEvent args)
+    public static void sendToGame(Object sender, GameEvent args)
     {
         gameManager.handleEvent(sender, args);
     }
 
-    public void sendToProgram(Object sender, Integer args)
+    public static void sendToProgram(Object sender, Integer args)
     {
         program.handleEvent(sender, args);
     }
