@@ -2,6 +2,7 @@ package com.buffalo.thevoid.gui;
 
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
+import com.buffalo.thevoid.io.InputQueue;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,33 +48,30 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         // Action listener for the input field
         input.addActionListener(e ->
         {
-            // Send the command to program using raise
-            try
-            {
-                raise(Integer.parseInt(input.getText()));
-            }
-            catch(NumberFormatException ex)
-            {
-                raise(-1);
-                write("Input an integer.");
-            }
+            // Toss into input queue
+            InputQueue.enqueue(input.getText());
 
             // Clear the input field
             input.setText("");
         });
 
-        // To make the listbox empty, stuff the whole thing with empty messages
-        // This also means stuff the queue with empty messages
-        for (int i = 0; i < maxEntries; i++)
-        {
-            queue.add(new LogEntry(""));
-        }
-
-        updateText();
+        clear();
 
         // Add the text area to the panel
         super.add(log, BorderLayout.NORTH);
         super.add(input, BorderLayout.SOUTH);
+    }
+
+    public void clear()
+    {
+        // To make the listbox empty, stuff the whole thing with empty messages
+        // This also means stuff the queue with empty messages
+        queue.clear();
+        for (int i = 0; i < maxEntries; i++)
+        {
+            queue.add(new LogEntry(""));
+        }
+        updateText();
     }
 
     private void write(String message)
