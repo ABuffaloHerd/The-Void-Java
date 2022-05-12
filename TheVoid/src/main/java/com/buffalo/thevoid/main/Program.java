@@ -12,6 +12,7 @@ import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.LogEventHandler;
 import com.buffalo.thevoid.io.TextHandler;
 
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,13 +29,6 @@ public class Program implements IEventPublisher, IEventHandler<Integer>
 
     public static Program program;
     public static GameManager manager;
-    private static Mediator mediator;
-
-    // Set up mediator
-    static
-    {
-        mediator = new Mediator();
-    }
 
     public static void main(String[] args)
     {
@@ -48,17 +42,19 @@ public class Program implements IEventPublisher, IEventHandler<Integer>
         Mediator.setProgram(program);
         Mediator.setGameManager(manager);
 
-        // Register gui
-        MainFrame mainframe = new MainFrame();
+        // Thread gui
+        SwingUtilities.invokeLater(MainFrame::new);
 
-        // Set up remaining references in mediator.
-        Mediator.setMainFrame(mainframe);
+        // Make main thread wait for gui thread to finish
+        TextHandler.wait(1000);
 
         // Register the game event handlers
         program.addEventHandler(manager);
 
         // Register the log event handler
         program.logOutputHandler.add(LogEventHandler.Logger);
+
+        // WILL BE REMOVED
         program.logOutputHandler.add(Mediator.getMainFrame().logPanel);
 
         // Register this program as the event handler for the logPanel
@@ -79,20 +75,23 @@ public class Program implements IEventPublisher, IEventHandler<Integer>
         while(gameRunning)
         {
             TextHandler.clearConsole();
-            System.out.println("Welcome to the void.\nPlease make a selection by entering the number associated with the option.");
-            System.out.println("1 - " + GameEvent.NEWGAME.text + " - RESETS EVERYTHING AND STARTS OVER");
-            System.out.println("2 - " + GameEvent.LOADGAME.text + " - Attempt to load a saved player");
-            System.out.println("3 - " + GameEvent.SAVEGAME.text + " - Save the current player");
-            System.out.println("4 - " + GameEvent.BATTLE.text + " - Fight to the death.");
-            System.out.println("5 - " + GameEvent.SHOP.text + " - Change weapons.");
-            System.out.println("6 - " + GameEvent.BOSS.text + " - Fight a boss.");
-            System.out.println("7 - " + GameEvent.EXBOSS.text + " - Fight the final boss.");
-            System.out.println("8 - " + GameEvent.RESUPPLY.text + " - Refill your health and mana.");
-            System.out.println("9 - Show Stats");
-            System.out.println("10 - How to play");
-            System.out.println("11 - " + GameEvent.EXIT.text + " - Exit the game. Progress not saved~");
+            Mediator.clearLog();
 
-            selection = TextHandler.validInt("", 11, 1);
+            Mediator.sendToLog(null, "Welcome to the void.\nPlease make a selection by entering the number associated with the option.");
+            Mediator.sendToLog(null, "1 - " + GameEvent.NEWGAME.text + " - RESETS EVERYTHING AND STARTS OVER");
+            Mediator.sendToLog(null, "2 - " + GameEvent.LOADGAME.text + " - Attempt to load a saved player");
+            Mediator.sendToLog(null, "3 - " + GameEvent.SAVEGAME.text + " - Save the current player");
+            Mediator.sendToLog(null, "4 - " + GameEvent.BATTLE.text + " - Fight to the death.");
+            Mediator.sendToLog(null, "5 - " + GameEvent.SHOP.text + " - Change weapons.");
+            Mediator.sendToLog(null, "6 - " + GameEvent.BOSS.text + " - Fight a boss.");
+            Mediator.sendToLog(null, "7 - " + GameEvent.EXBOSS.text + " - Fight the final boss.");
+            Mediator.sendToLog(null, "8 - " + GameEvent.RESUPPLY.text + " - Refill your health and mana.");
+            Mediator.sendToLog(null, "9 - Show Stats");
+            Mediator.sendToLog(null, "10 - How to play");
+            Mediator.sendToLog(null, "11 - " + GameEvent.EXIT.text + " - Exit the game. Progress not saved~");
+
+//            selection = TextHandler.validInt("", 11, 1);
+            selection = TextHandler.validInt(11, 1);
 
             // Can't play without a player you clown.
             if(selection > 2 && !manager.isReady())
