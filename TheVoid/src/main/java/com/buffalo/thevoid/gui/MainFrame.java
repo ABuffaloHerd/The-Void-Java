@@ -29,6 +29,7 @@ public class MainFrame extends JFrame
 
         // Construct mediator
         mediator = new Mediator();
+        Mediator.setMainFrame(this);
 
         // Register the program with the log panel
         // Uses static reference rather than instance reference.
