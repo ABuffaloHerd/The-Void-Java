@@ -1,5 +1,7 @@
 package com.buffalo.thevoid.io;
 
+import com.buffalo.thevoid.gui.Mediator;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -9,6 +11,7 @@ import java.util.Scanner;
 public class TextHandler
 {
     private static final Scanner s = new Scanner(System.in);
+    private static final InputQueue q = new InputQueue();
 
     /**
      * Validates input to match the system used here.
@@ -71,6 +74,71 @@ public class TextHandler
         }
 
         return input;
+    }
+
+    /**
+     * inputQueue version. Runs in a thread.
+     * @return the next valid input in the queue.
+     */
+    public static int validInt(int upper, int lower)
+    {
+        System.out.println("Waiting for input...");
+        Integer[] input = new Integer[1]; // needs to be nullable. is also a bit hacky.
+        Thread t = new Thread(() ->
+        {
+            boolean lock = true;
+
+            while(lock)
+            {
+                try
+                {
+                    // Check to see that the queue is not empty
+                    if(InputQueue.queue.isEmpty())
+                    {
+                        System.out.println("Empty queue. Waiting...");
+                        wait(100);
+                        continue;
+                    }
+                    // Now we can parse the input
+                    System.out.println("Parsing input...");
+                    input[0] = Integer.parseInt(InputQueue.dequeue());
+                    if (input[0] > upper || input[0] < lower)
+                        throw new OutOfBoundsException();
+                    else
+                    {
+                        lock = false;
+                        continue;
+                    }
+                }
+                catch (OutOfBoundsException e)
+                {
+                    Mediator.sendToLog(null, "Input must be above " + (upper + 1) + " and below " + (lower - 1));
+                }
+                catch(InputMismatchException e)
+                {
+                    Mediator.sendToLog(null, "Input a valid integer.");
+                }
+                catch(NullPointerException e)
+                {
+                    System.out.println("Found no valid integer in input queue. Thread rerunning.");
+                }
+
+                wait(100);
+            }
+        });
+
+        // Start the thread
+        t.start();
+
+        // Wait for it to finish before returning.
+        // This halts the main thread.
+        try
+        {
+            t.join();
+        }
+        catch (InterruptedException ignore) {}
+
+        return input[0];
     }
 
     // Clears console
