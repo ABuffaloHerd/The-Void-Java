@@ -38,7 +38,7 @@ public class MainFrame extends JFrame
         // Uses static reference rather than instance reference.
         // Can remove. Just check first.
         // TODO: check for safe removal
-        logPanel.addEventHandler(Mediator.getProgram());
+        //logPanel.addEventHandler(Mediator.getProgram());
 
         // Create a display panel
         // This panel will be used to display three other panels

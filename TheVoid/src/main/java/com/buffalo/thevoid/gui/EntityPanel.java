@@ -34,15 +34,15 @@ public class EntityPanel extends JPanel
         labelConstraints.weighty = 0.0;
 
         // Insert the hp field first
-        hpField = new JTextField(50);
+        hpField = new JTextField(35);
         hpField.setBackground(Color.BLACK);
         hpField.setForeground(Color.GREEN);
         hpField.setEditable(false);
         add(hpField, fieldConstraints);
 
         // Then the defense and resistance labels
-        DEFLabel = new JLabel("DEF: ");
-        RESLabel = new JLabel("RES: ");
+        DEFLabel = new JLabel("DEF: 1111111111111111111");
+        RESLabel = new JLabel("RES: 1111111111111111111");
 
         labelConstraints.gridx = 0;
         labelConstraints.gridy = 1;
@@ -50,6 +50,9 @@ public class EntityPanel extends JPanel
 
         labelConstraints.gridx = 1;
         add(RESLabel, labelConstraints);
+
+        DEFLabel.setVisible(true);
+        RESLabel.setVisible(true);
     }
 
     public void update(Entity entity)

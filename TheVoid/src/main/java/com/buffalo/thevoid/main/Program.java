@@ -16,7 +16,7 @@ import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Program implements IEventPublisher, IEventHandler<Integer>
+public class Program implements IEventPublisher
 {
     // The event handlers for the program
     // This handles game events
@@ -53,9 +53,6 @@ public class Program implements IEventPublisher, IEventHandler<Integer>
 
         // Register the log event handler
         program.logOutputHandler.add(LogEventHandler.Logger);
-
-        // WILL BE REMOVED
-        program.logOutputHandler.add(Mediator.getMainFrame().logPanel);
 
         // Register this program as the event handler for the logPanel
         // This will allow input from logPanel to be passed in here.
@@ -186,12 +183,5 @@ public class Program implements IEventPublisher, IEventHandler<Integer>
     public void removeEventHandler(IEventHandler<?> f)
     {
         gameEventHandler.add((IEventHandler<GameEvent>) f);
-    }
-
-    @Override
-    public void handleEvent(Object sender, Integer args)
-    {
-        System.out.println("Main program received event from " + sender + " with args: " + args);
-        selectEvent(program, manager, args);
     }
 }

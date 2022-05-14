@@ -42,8 +42,8 @@ public class Mediator
         gameManager.handleEvent(sender, args);
     }
 
-    public static void sendToProgram(Object sender, Integer args)
-    {
-        program.handleEvent(sender, args);
-    }
+//    public static void sendToProgram(Object sender, Integer args)
+//    {
+//        program.handleEvent(sender, args);
+//    }
 }

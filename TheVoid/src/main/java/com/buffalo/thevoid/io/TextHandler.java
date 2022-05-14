@@ -114,7 +114,7 @@ public class TextHandler
                 {
                     Mediator.sendToLog(null, "Input must be above " + (upper + 1) + " and below " + (lower - 1));
                 }
-                catch(InputMismatchException e)
+                catch(InputMismatchException | NumberFormatException e)
                 {
                     Mediator.sendToLog(null, "Input a valid integer.");
                 }
