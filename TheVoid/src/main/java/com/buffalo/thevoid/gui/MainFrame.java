@@ -8,6 +8,7 @@ public class MainFrame extends JFrame
     public final JPanel mainPanel;
     public final LogPanel logPanel;
     public final EntityPanel entityPanel;
+    public final PlayerPanel playerPanel;
     private final JPanel controlPanel;
 
     private final Mediator mediator;
@@ -47,8 +48,14 @@ public class MainFrame extends JFrame
         // 3. Quick access buttons. These map to integers 1 - 6 and are used to control battle.
         // They perform the same function as typing the number in the log panel.
         controlPanel = new JPanel(new GridLayout(3, 1));
-        entityPanel = new EntityPanel();
+
+        // Create the entity panel
+        entityPanel = new EntityPanel("Enemy");
         controlPanel.add(entityPanel);
+
+        // Create player panel
+        playerPanel = new PlayerPanel("Player");
+        controlPanel.add(playerPanel);
 
         // Add control panel to main panel
         mainPanel.add(controlPanel, BorderLayout.CENTER);
@@ -56,6 +63,7 @@ public class MainFrame extends JFrame
         mainPanel.setVisible(true);
         logPanel.setVisible(true);
         controlPanel.setVisible(true);
+        entityPanel.setVisible(true);
 
         pack();
         setVisible(true);
