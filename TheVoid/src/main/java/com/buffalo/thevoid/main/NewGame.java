@@ -6,6 +6,7 @@ import com.buffalo.thevoid.equipment.Spell;
 import com.buffalo.thevoid.equipment.SpellList;
 import com.buffalo.thevoid.equipment.Weapon;
 import com.buffalo.thevoid.equipment.WeaponList;
+import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.InputQueue;
 import com.buffalo.thevoid.io.TextHandler;
 
@@ -28,6 +29,8 @@ class NewGame
         //Scanner s = new Scanner(System.in);
 
         System.out.println("What is your name? ");
+        Mediator.sendToLog(null, "What is your name?");
+
         do
         {
             name = InputQueue.dequeue();
@@ -38,7 +41,6 @@ class NewGame
         }
         while(name.isEmpty());
         //name = s.nextLine();
-
 
         return new Player(name, Config.START_HEALTH, Config.START_MANA,
                 Config.START_DEFENSE, Config.START_RESISTANCE,
