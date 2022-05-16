@@ -5,6 +5,7 @@ import com.buffalo.thevoid.event.IEventPublisher;
 import com.buffalo.thevoid.io.InputQueue;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -38,6 +39,17 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         log.setBackground(Color.white);
         log.setVisible(true);
         log.setBorder(BorderFactory.createLineBorder(Color.black));
+        log.setLineWrap(true); // Wrap long lines
+
+        // Using whatever means necessary to stop the log area from resizing itself.
+        JScrollPane scroll = new JScrollPane(log);
+        scroll.setPreferredSize(new Dimension(200, 700));
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        scroll.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        // autoscroll
+        DefaultCaret caret = (DefaultCaret)log.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         // Input settings
         input.setColumns(25);
@@ -55,10 +67,10 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
             input.setText("");
         });
 
-        clear();
+        clear(); // Make sure log is empty.
 
         // Add the text area to the panel
-        super.add(log, BorderLayout.NORTH);
+        super.add(scroll, BorderLayout.NORTH);
         super.add(input, BorderLayout.SOUTH);
     }
 
@@ -74,11 +86,14 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         updateText();
     }
 
-    private void write(String message)
+    public void write(String message)
     {
-        // Add the message to the queue
+        // Add the new log entry to the queue
         queue.add(new LogEntry(message));
-        queue.poll();
+        // Pop the oldest entry off the queue if we have too many
+        if(queue.size() > maxEntries)
+            queue.poll();
+        // Update the text
         updateText();
     }
 
@@ -101,6 +116,7 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         input.setEnabled(true);
     }
 
+    // TODO: Check for safe removal
     private void raise(Integer args)
     {
         for(var subscriber : subscribers)
@@ -112,13 +128,14 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
     @Override
     public void handleEvent(Object sender, String args)
     {
-        // Add the new log entry to the queue
-        queue.add(new LogEntry(args));
-        // Pop the oldest entry off the queue if we have too many
-        if(queue.size() > maxEntries)
-            queue.poll();
-        // Update the text
-        updateText();
+        if(sender == null)
+        {
+            write(args);
+        }
+        else
+        {
+            write(sender.getClass().getSimpleName() + ": " + args);
+        }
     }
 
     @Override
