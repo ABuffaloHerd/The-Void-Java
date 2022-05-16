@@ -29,7 +29,7 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         // Border
         setBorder(BorderFactory.createTitledBorder("Log"));
 
-        this.log = new JTextArea(25, 25);
+        this.log = new JTextArea(25, 50);
         this.queue = new LinkedList<>();
         this.input = new JTextField();
         this.maxEntries = 43;
@@ -43,7 +43,7 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
 
         // Using whatever means necessary to stop the log area from resizing itself.
         JScrollPane scroll = new JScrollPane(log);
-        scroll.setPreferredSize(new Dimension(200, 700));
+        scroll.setPreferredSize(new Dimension(400, 700));
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         scroll.setBorder(BorderFactory.createLineBorder(Color.black));
 
