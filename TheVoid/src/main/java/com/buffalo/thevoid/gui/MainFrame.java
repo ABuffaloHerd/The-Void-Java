@@ -9,6 +9,7 @@ public class MainFrame extends JFrame
     public final LogPanel logPanel;
     public final EntityPanel entityPanel;
     public final PlayerPanel playerPanel;
+    public final ButtonPanel buttonPanel;
     private final JPanel controlPanel;
 
     private final Mediator mediator;
@@ -32,7 +33,7 @@ public class MainFrame extends JFrame
         add(mainPanel);
 
         // Construct mediator
-        mediator = new Mediator();
+        mediator = new Mediator(); // TODO: Safe remove
         Mediator.setMainFrame(this); // set static reference to this.
 
         // Register the program with the log panel
@@ -56,6 +57,10 @@ public class MainFrame extends JFrame
         // Create player panel
         playerPanel = new PlayerPanel("Player");
         controlPanel.add(playerPanel);
+
+        // Create quick access buttons
+        buttonPanel = new ButtonPanel();
+        controlPanel.add(buttonPanel);
 
         // Add control panel to main panel
         mainPanel.add(controlPanel, BorderLayout.CENTER);
