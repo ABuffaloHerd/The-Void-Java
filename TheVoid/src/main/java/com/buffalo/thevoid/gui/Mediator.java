@@ -1,6 +1,7 @@
 package com.buffalo.thevoid.gui;
 
-import com.buffalo.thevoid.event.GameEvent;
+import com.buffalo.thevoid.entity.Entity;
+import com.buffalo.thevoid.entity.Player;
 import com.buffalo.thevoid.main.GameManager;
 import com.buffalo.thevoid.main.Program;
 import lombok.Getter;
@@ -13,7 +14,7 @@ public class Mediator
 {
     // Only one of each of these is allowed. Shared between all instances of this class.
     // Run constructor only once. Use blank constructor to make a new instance that shares the data.
-    // This keeps the instances private to each class that needs it.
+    // This keeps the instances private and only exposes the methods used to communicate between the classes.
     private static @Getter @Setter MainFrame mainFrame;
     private static @Getter @Setter Program program;
     private static @Getter @Setter GameManager gameManager;
@@ -25,7 +26,10 @@ public class Mediator
         Mediator.gameManager = gameManager;
     }
 
-    public Mediator() {}
+    public Mediator()
+    {
+
+    }
 
     public static void clearLog()
     {
@@ -37,13 +41,31 @@ public class Mediator
         mainFrame.logPanel.handleEvent(sender, message);
     }
 
-    public static void sendToGame(Object sender, GameEvent args)
+    //******************************************************************************************************************
+    // Control methods
+    //******************************************************************************************************************
+    public static void disableButtons()
     {
-        gameManager.handleEvent(sender, args);
+        mainFrame.buttonPanel.disableAllButtons();
     }
 
-//    public static void sendToProgram(Object sender, Integer args)
-//    {
-//        program.handleEvent(sender, args);
-//    }
+    public static void enableButtons()
+    {
+        mainFrame.buttonPanel.enableAllButtons();
+    }
+
+    //******************************************************************************************************************
+    // Display methods
+    //******************************************************************************************************************
+
+    public static void updatePlayer(Player p)
+    {
+        mainFrame.playerPanel.updateDisplay(p);
+    }
+
+    public static void updateEnemy(Entity e)
+    {
+        mainFrame.entityPanel.updateDisplay(e);
+    }
+
 }
