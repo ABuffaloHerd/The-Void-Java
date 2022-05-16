@@ -14,49 +14,71 @@ public class EntityPanel extends JPanel
 
     public EntityPanel()
     {
-        setLayout(new GridBagLayout());
-
-        GridBagConstraints fieldConstraints = new GridBagConstraints();
-        GridBagConstraints labelConstraints = new GridBagConstraints();
-
-        fieldConstraints.gridheight = 2;
-        fieldConstraints.gridwidth = 2;
-        fieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-        fieldConstraints.weightx = 1;
-        fieldConstraints.weighty = 0.0;
-        fieldConstraints.gridx = 0;
-        fieldConstraints.gridy = 0;
-
-        labelConstraints.gridheight = 2;
-        labelConstraints.gridwidth = 2;
-        labelConstraints.fill = GridBagConstraints.HORIZONTAL;
-        labelConstraints.weightx = 0.5;
-        labelConstraints.weighty = 0.0;
-
-        // Insert the hp field first
-        hpField = new JTextField(35);
-        hpField.setBackground(Color.BLACK);
-        hpField.setForeground(Color.GREEN);
-        hpField.setEditable(false);
-        add(hpField, fieldConstraints);
-
-        // Then the defense and resistance labels
-        DEFLabel = new JLabel("DEF: 1111111111111111111");
-        RESLabel = new JLabel("RES: 1111111111111111111");
-
-        labelConstraints.gridx = 0;
-        labelConstraints.gridy = 1;
-        add(DEFLabel, labelConstraints);
-
-        labelConstraints.gridx = 1;
-        add(RESLabel, labelConstraints);
-
-        DEFLabel.setVisible(true);
-        RESLabel.setVisible(true);
+        // Empty constructor
     }
 
-    public void update(Entity entity)
+    public EntityPanel(String title)
     {
+        setBorder(BorderFactory.createTitledBorder(title));
+
+        GridBagLayout layout = new GridBagLayout();
+
+        setLayout(layout);
+        //defense and resistance labels
+        DEFLabel = new JLabel("");
+        RESLabel = new JLabel("");
+
+        // hp field first
+        hpField = new JTextField(50);
+        hpField.setFont(new Font("Consolas", Font.PLAIN, 16));
+        hpField.setBackground(Color.BLACK);
+        hpField.setForeground(Color.GREEN);
+        hpField.setText("Test ASDFASDFASDFASDF");
+        hpField.setEditable(false);
+
+        privateAdd();
+
+        updateDisplay(null);
+    }
+
+    // Extracted method so that constructor can be reused.
+    private void privateAdd()
+    {
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        addComponent(hpField, 0, 0, 2, 1);
+        addComponent(DEFLabel, 0, 1, 1, 1);
+        addComponent(RESLabel, 1, 1, 1, 1);
+    }
+
+    /**
+     * Adds a component to the panel. Assuming you're using a GridBagLayout.
+     * @param component The component to add.
+     * @param x The x coordinate of the component.
+     * @param y The y coordinate of the component.
+     * @param spanX The number of columns the component should span.
+     * @param spanY The number of rows the component should span.
+     */
+    protected void addComponent(Component component, int x, int y, Integer spanX, Integer spanY)
+    {
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = x;
+        c.gridy = y;
+        c.gridwidth = (spanX == null) ? 1 : spanX;
+        c.gridheight = (spanY == null) ? 1 : spanY;
+
+        add(component, c);
+    }
+
+    public void updateDisplay(Entity entity)
+    {
+        if (entity == null)
+        {
+            hpField.setText("┬┴┬┴┤ ͜ʖ ͡°) ├┬┴┬┴i see you");
+            DEFLabel.setText("DEF: -0");
+            RESLabel.setText("RES: -0");
+            return;
+        }
         hpField.setText(entity.getHealthBar().toString());
         DEFLabel.setText("DEF: " + entity.getDEF());
         RESLabel.setText("RES: " + entity.getRES());
