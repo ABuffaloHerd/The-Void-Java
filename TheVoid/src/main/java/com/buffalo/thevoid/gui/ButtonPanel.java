@@ -17,6 +17,8 @@ public class ButtonPanel extends JPanel
         setBorder(BorderFactory.createTitledBorder("Controls"));
         GridBagConstraints c = new GridBagConstraints();
 
+        // Add buttons using loops.
+
         // Button values start at 1, not 0
         for(int x = 1; x <= BUTTONCOUNT; x++)
         {
@@ -27,8 +29,8 @@ public class ButtonPanel extends JPanel
         {
             for(int x = 0; x < buttons.size(); x++)
             {
-                c.gridx = x % 2; // Dunno if this works
-                c.gridy = x / 2;
+                c.gridx = x % 2; // 0 or 1
+                c.gridy = x / 2; // 0 - whatever
                 add(buttons.get(x), c);
             }
         }
