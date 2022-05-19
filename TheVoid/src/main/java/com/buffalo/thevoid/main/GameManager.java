@@ -9,10 +9,12 @@ import com.buffalo.thevoid.exception.InsufficientManaException;
 import com.buffalo.thevoid.exception.ResetBattleLoopException;
 import com.buffalo.thevoid.factory.BossList;
 import com.buffalo.thevoid.factory.MonsterFactory;
+import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.FileHandler;
 import com.buffalo.thevoid.io.TextHandler;
 
+import javax.print.attribute.standard.Media;
 import java.sql.SQLOutput;
 import java.util.Random;
 
@@ -37,13 +39,18 @@ public class GameManager implements IEventHandler<GameEvent>
             case NEWGAME ->
                     {
                         player = NewGame.newPlayer();
+                        Mediator.updatePlayer(player);
                         playerLoaded = true;
                     }
             case LOADGAME ->
                     {
                         player = NewGame.loadPlayer();
                         playerLoaded = player != null;
-                        if(playerLoaded) System.out.printf("Player %s loaded!\n", player.name);
+                        if(playerLoaded)
+                        {
+                            System.out.printf("Player %s loaded!\n", player.name);
+                            Mediator.updatePlayer(player);
+                        }
                         TextHandler.wait(1800);
                     }
             case SAVEGAME ->
@@ -56,6 +63,7 @@ public class GameManager implements IEventHandler<GameEvent>
                     { // resupply method
                         player.refreshStats();
                         System.out.println("Your stats have been replenished!");
+                        Mediator.updatePlayer(player);
                         TextHandler.wait(1500);
                     }
             case BATTLE -> battle();
@@ -105,17 +113,18 @@ public class GameManager implements IEventHandler<GameEvent>
         // Print weapons that are unlocked
         int unlocked = 0; // Keep track of this for validation
         int counter = 0; // need an index too
+        Mediator.logBreak(3);
 
-        System.out.printf("%sInventory%s\n\n", ConsoleColours.ANSI_GREEN_BACKGROUND, ConsoleColours.TEXT_RESET);
-        System.out.printf("Currently equipped: %s%s%s\n", ConsoleColours.TEXT_BLUE, player.getWeapon().name, ConsoleColours.TEXT_RESET);
-        System.out.println("The following weapons are available:");
-        System.out.printf("%s[Index - Name]%s\n\n", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET);
+        Mediator.sendToLog("Inventory:");
+        Mediator.sendToLog("Currently equipped:" + player.getWeapon().name);
+        Mediator.sendToLog("The following weapons are available:");
+        //System.out.printf("%s[Index - Name]%s\n\n", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET);
 
         for (var set : WeaponList.WeaponData)
         {
             if (set.getItem2()) // If it is unlocked
             {
-                System.out.printf("%d - %s | Level required: %d\n", counter, set.getItem1().name, set.getItem1().levelRequired);
+                Mediator.sendToLog(String.format("%d - %s | Level required: %d\n", counter, set.getItem1().name, set.getItem1().levelRequired));
                 unlocked++;
                 counter++;
             }
@@ -124,7 +133,8 @@ public class GameManager implements IEventHandler<GameEvent>
         // Uhh due to an oversight, if the weapons are not unlocked in order then the weapon equipped will not
         // correspond to the actual weapon index.
         // However, this shouldn't happen to begin with so i'm going to ignore it.
-        int selection = TextHandler.validInt("Choose a weapon via index.", unlocked - 1, 0);
+        Mediator.sendToLog(this, "Enter the index of the weapon you wish to equip.");
+        int selection = TextHandler.validInt(unlocked - 1, 0);
 
         // Check level
         if (WeaponList.WeaponData.get(selection).getItem1().levelRequired > player.getLevel())

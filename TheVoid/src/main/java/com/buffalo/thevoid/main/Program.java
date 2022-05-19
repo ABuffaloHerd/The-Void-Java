@@ -73,6 +73,7 @@ public class Program implements IEventPublisher
         {
             TextHandler.clearConsole();
             Mediator.clearLog();
+            Mediator.disableButtons();
 
             Mediator.sendToLog(null, "Welcome to the void.\nPlease make a selection by entering the number associated with the option.");
             Mediator.sendToLog(null, "1 - " + GameEvent.NEWGAME.text + " - RESETS EVERYTHING AND STARTS OVER");
@@ -95,9 +96,14 @@ public class Program implements IEventPublisher
             {
                 System.out.printf("%sYou must create a player first.\n", ConsoleColours.TEXT_RED);
                 System.out.printf("Select new game or load game to get started.%s", ConsoleColours.TEXT_RESET);
-                program.raise("You must create a player first.");
-                program.raise("Select new game or load game to get started.");
-                TextHandler.wait(1500);
+//                program.raise("You must create a player first.");
+//                program.raise("Select new game or load game to get started.");
+
+                Mediator.sendToLog(null, "You must create a player first.");
+                Mediator.sendToLog(null, "Select new game or load game to get started.");
+                Mediator.sendToLog(null, "Enter 1 to continue.");
+
+                TextHandler.validInt(1, 1);
                 continue;
             }
 
@@ -114,8 +120,8 @@ public class Program implements IEventPublisher
         {
             System.out.printf("%sYou must create a player first.\n", ConsoleColours.TEXT_RED);
             System.out.printf("Select new game or load game to get started.%s", ConsoleColours.TEXT_RESET);
-            program.raise("You must create a player first.");
-            program.raise("Select new game or load game to get started.");
+//            program.raise("You must create a player first.");
+//            program.raise("Select new game or load game to get started.");
             TextHandler.wait(1500);
             return true;
         }
@@ -127,6 +133,7 @@ public class Program implements IEventPublisher
                 program.raise(GameEvent.NEWGAME);
                 new BossList(); // Reset the boss and weapons by instantiating them again
                 new WeaponList();
+                new SpellList();
             }
             case 2 -> program.raise(GameEvent.LOADGAME);
             case 3 -> program.raise(GameEvent.SAVEGAME);

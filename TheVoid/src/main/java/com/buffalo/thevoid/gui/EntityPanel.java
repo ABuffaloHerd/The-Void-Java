@@ -4,6 +4,7 @@ import com.buffalo.thevoid.entity.Entity;
 import lombok.Getter;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 
 public class EntityPanel extends JPanel
@@ -34,6 +35,7 @@ public class EntityPanel extends JPanel
         hpField.setBackground(Color.BLACK);
         hpField.setForeground(Color.GREEN);
         hpField.setText("Test ASDFASDFASDFASDF");
+        hpField.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.WHITE, Color.GRAY));
         hpField.setEditable(false);
 
         privateAdd();

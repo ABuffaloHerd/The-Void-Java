@@ -41,6 +41,24 @@ public class Mediator
         mainFrame.logPanel.handleEvent(sender, message);
     }
 
+    public static void sendToLog(String message)
+    {
+        mainFrame.logPanel.handleEvent(null, message);
+    }
+
+    public static void logBreak(int count)
+    {
+        for(int i = 0; i < count; i++)
+        {
+            mainFrame.logPanel.handleEvent(null, "");
+        }
+    }
+
+    public static void logBreak()
+    {
+        mainFrame.logPanel.handleEvent(null, "");
+    }
+
     //******************************************************************************************************************
     // Control methods
     //******************************************************************************************************************
