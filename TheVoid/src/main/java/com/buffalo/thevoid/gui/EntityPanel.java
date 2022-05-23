@@ -13,11 +13,6 @@ public class EntityPanel extends JPanel
 
     protected @Getter JTextField hpField;
 
-    public EntityPanel()
-    {
-        // Empty constructor
-    }
-
     public EntityPanel(String title)
     {
         setBorder(BorderFactory.createTitledBorder(title));
@@ -34,7 +29,6 @@ public class EntityPanel extends JPanel
         hpField.setFont(new Font("Consolas", Font.PLAIN, 16));
         hpField.setBackground(Color.BLACK);
         hpField.setForeground(Color.GREEN);
-        hpField.setText("Test ASDFASDFASDFASDF");
         hpField.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.WHITE, Color.GRAY));
         hpField.setEditable(false);
 

@@ -87,6 +87,7 @@ class NewGame
         catch(Exception e)
         {
             System.out.println("Error loading player data. Check player.dat");
+            Mediator.sendToLog(null, "Error loading player data. Check player.dat");
             return null;
         }
     }

@@ -11,6 +11,7 @@ import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.LogEventHandler;
 import com.buffalo.thevoid.io.TextHandler;
+import org.w3c.dom.Text;
 
 import javax.swing.*;
 import java.util.HashSet;
@@ -54,11 +55,6 @@ public class Program implements IEventPublisher
         // Register the log event handler
         program.logOutputHandler.add(LogEventHandler.Logger);
 
-        // Register this program as the event handler for the logPanel
-        // This will allow input from logPanel to be passed in here.
-//        mainframe.logPanel.addEventHandler(program);
-        // MOVED TO MAINFRAME CONSTRUCTOR
-
         // Instantiate the boss, weapons and spells
         new BossList();
         new WeaponList();
@@ -74,6 +70,9 @@ public class Program implements IEventPublisher
             TextHandler.clearConsole();
             Mediator.clearLog();
             Mediator.disableButtons();
+            Mediator.enableTextFields();
+
+            Mediator.updateEnemy(null);
 
             Mediator.sendToLog(null, "Welcome to the void.\nPlease make a selection by entering the number associated with the option.");
             Mediator.sendToLog(null, "1 - " + GameEvent.NEWGAME.text + " - RESETS EVERYTHING AND STARTS OVER");
@@ -96,8 +95,6 @@ public class Program implements IEventPublisher
             {
                 System.out.printf("%sYou must create a player first.\n", ConsoleColours.TEXT_RED);
                 System.out.printf("Select new game or load game to get started.%s", ConsoleColours.TEXT_RESET);
-//                program.raise("You must create a player first.");
-//                program.raise("Select new game or load game to get started.");
 
                 Mediator.sendToLog(null, "You must create a player first.");
                 Mediator.sendToLog(null, "Select new game or load game to get started.");
@@ -151,16 +148,17 @@ public class Program implements IEventPublisher
 
     private static void help()
     {
-        System.out.println("Welcome to the void, a game about beating the crap out of enemies.");
-        System.out.println("Choose the battle option to instigate a fight with common monsters.");
-        System.out.println("Win this fight to increase your killcount. Level up every few kills. (specified in config)");
-        System.out.println("Unlock a new weapon every time you level up. These weapons have level requirements however.");
-        System.out.println("When you think you're ready, you may choose to fight a boss.");
-        System.out.println("They have level requirements, but those are just a suggestion.");
-        System.out.println("You may fight them at any level above the minimum.");
-        System.out.println("Defeating a boss for the first time will grant you five kills (hardcoded)");
-        System.out.println("After you've gotten bored of grinding you may choose to fight the final boss. She has no level requirement.");
-        TextHandler.validInt("\n\nEnter any integer to continue.");
+        Mediator.sendToLog("Welcome to the void, a game about beating the crap out of enemies.");
+        Mediator.sendToLog("Choose the battle option to instigate a fight with common monsters.");
+        Mediator.sendToLog("Win this fight to increase your killcount. Level up every few kills. (specified in config)");
+        Mediator.sendToLog("Unlock a new weapon every time you level up. These weapons have level requirements however.");
+        Mediator.sendToLog("When you think you're ready, you may choose to fight a boss.");
+        Mediator.sendToLog("They have level requirements, but those are just a suggestion.");
+        Mediator.sendToLog("You may fight them at any level above the minimum.");
+        Mediator.sendToLog("Defeating a boss for the first time will grant you five kills (hardcoded)");
+        Mediator.sendToLog("After you've gotten bored of grinding you may choose to fight the final boss. She has no level requirement.");
+        Mediator.sendToLog("This message will self destruct in 10 seconds.");
+        TextHandler.wait(10000);
     }
 
     // Raise event

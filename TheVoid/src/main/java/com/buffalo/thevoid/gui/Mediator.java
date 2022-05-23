@@ -72,6 +72,16 @@ public class Mediator
         mainFrame.buttonPanel.enableAllButtons();
     }
 
+    public static void disableTextFields()
+    {
+        mainFrame.logPanel.disableInput();
+    }
+
+    public static void enableTextFields()
+    {
+        mainFrame.logPanel.enableInput();
+    }
+
     //******************************************************************************************************************
     // Display methods
     //******************************************************************************************************************

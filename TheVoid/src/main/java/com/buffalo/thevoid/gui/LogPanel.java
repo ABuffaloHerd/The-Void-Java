@@ -86,7 +86,7 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         updateText();
     }
 
-    public void write(String message)
+    protected void write(String message)
     {
         // Add the new log entry to the queue
         queue.add(new LogEntry(message));
@@ -106,12 +106,12 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         }
     }
 
-    public void disableInput()
+    protected void disableInput()
     {
         input.setEnabled(false);
     }
 
-    public void enableInput()
+    protected void enableInput()
     {
         input.setEnabled(true);
     }
