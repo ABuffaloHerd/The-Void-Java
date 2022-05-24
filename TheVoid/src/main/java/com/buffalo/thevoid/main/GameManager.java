@@ -9,10 +9,12 @@ import com.buffalo.thevoid.exception.InsufficientManaException;
 import com.buffalo.thevoid.exception.ResetBattleLoopException;
 import com.buffalo.thevoid.factory.BossList;
 import com.buffalo.thevoid.factory.MonsterFactory;
+import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.FileHandler;
 import com.buffalo.thevoid.io.TextHandler;
 
+import javax.print.attribute.standard.Media;
 import java.sql.SQLOutput;
 import java.util.Random;
 
@@ -37,18 +39,26 @@ public class GameManager implements IEventHandler<GameEvent>
             case NEWGAME ->
                     {
                         player = NewGame.newPlayer();
+                        Mediator.updatePlayer(player);
                         playerLoaded = true;
                     }
             case LOADGAME ->
                     {
                         player = NewGame.loadPlayer();
                         playerLoaded = player != null;
-                        if(playerLoaded) System.out.printf("Player %s loaded!\n", player.name);
+                        if(playerLoaded)
+                        {
+                            System.out.printf("Player %s loaded!\n", player.name);
+                            Mediator.sendToLog(String.format("Player %s loaded!", player.name));
+                            Mediator.updatePlayer(player);
+                        }
                         TextHandler.wait(1800);
                     }
             case SAVEGAME ->
                     {
                         FileHandler.savePlayer(player);
+                        System.out.printf("Player %s saved!\n", player.name);
+                        Mediator.sendToLog(String.format("Player %s saved!", player.name));
                         TextHandler.wait(2500);
                     }
             case SHOP -> shop();
@@ -56,18 +66,37 @@ public class GameManager implements IEventHandler<GameEvent>
                     { // resupply method
                         player.refreshStats();
                         System.out.println("Your stats have been replenished!");
+                        Mediator.sendToLog("Your stats have been replenished!");
+                        Mediator.updatePlayer(player);
                         TextHandler.wait(1500);
                     }
-            case BATTLE -> battle();
+            case BATTLE ->
+                    {
+                        Mediator.disableTextFields();
+                        Mediator.enableButtons();
+                        battle();
+                    }
             case BOSS -> bossBattle();
-            case EXBOSS -> finalBoss();
+            case EXBOSS ->
+                    {
+                        Mediator.disableTextFields();
+                        Mediator.enableButtons();
+                        finalBoss();
+                    }
             case LEVELUP ->
                     { // This is short enough to include the wait.
                         if(WeaponList.unlockWeapon())
+                        {
                             System.out.println("New weapon unlocked!");
+                            Mediator.sendToLog("New weapon unlocked!");
+                        }
+
 
                         if(SpellList.unlockSpell())
+                        {
                             System.out.println("New spell unlocked!");
+                            Mediator.sendToLog("New spell unlocked!");
+                        }
                         
                         TextHandler.wait(1000);
                     }
@@ -80,17 +109,18 @@ public class GameManager implements IEventHandler<GameEvent>
                         if (player.updateLevel())
                         {
                             System.out.println("You leveled up!");
+                            Mediator.sendToLog("You leveled up!");
                             handleEvent(this, GameEvent.LEVELUP);
                         }
                         TextHandler.wait(1000); // No auto resupply
                     }
             case PLAYERLOSE ->
                     {
-                        System.out.println("You have DIED!");
-                        System.out.println("ggez you suck");
-                        System.out.println("get rekt");
-                        System.out.println("go touch some grass");
-                        System.out.println("so many nubs in this game");
+                        Mediator.sendToLog("You have DIED!");
+                        Mediator.sendToLog("ggez you suck");
+                        Mediator.sendToLog("get rekt");
+                        Mediator.sendToLog("go touch some grass");
+                        Mediator.sendToLog("so many nubs in this game");
                         TextHandler.wait(8000);
                         handleEvent(this, GameEvent.RESUPPLY);
                     }
@@ -105,17 +135,18 @@ public class GameManager implements IEventHandler<GameEvent>
         // Print weapons that are unlocked
         int unlocked = 0; // Keep track of this for validation
         int counter = 0; // need an index too
+        Mediator.logBreak(3);
 
-        System.out.printf("%sInventory%s\n\n", ConsoleColours.ANSI_GREEN_BACKGROUND, ConsoleColours.TEXT_RESET);
-        System.out.printf("Currently equipped: %s%s%s\n", ConsoleColours.TEXT_BLUE, player.getWeapon().name, ConsoleColours.TEXT_RESET);
-        System.out.println("The following weapons are available:");
-        System.out.printf("%s[Index - Name]%s\n\n", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET);
+        Mediator.sendToLog("Inventory:");
+        Mediator.sendToLog("Currently equipped:" + player.getWeapon().name);
+        Mediator.sendToLog("The following weapons are available:");
+        //System.out.printf("%s[Index - Name]%s\n\n", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET);
 
         for (var set : WeaponList.WeaponData)
         {
             if (set.getItem2()) // If it is unlocked
             {
-                System.out.printf("%d - %s | Level required: %d\n", counter, set.getItem1().name, set.getItem1().levelRequired);
+                Mediator.sendToLog(String.format("%d - %s | Level required: %d\n", counter, set.getItem1().name, set.getItem1().levelRequired));
                 unlocked++;
                 counter++;
             }
@@ -124,15 +155,20 @@ public class GameManager implements IEventHandler<GameEvent>
         // Uhh due to an oversight, if the weapons are not unlocked in order then the weapon equipped will not
         // correspond to the actual weapon index.
         // However, this shouldn't happen to begin with so i'm going to ignore it.
-        int selection = TextHandler.validInt("Choose a weapon via index.", unlocked - 1, 0);
+        Mediator.sendToLog(this, "Enter the index of the weapon you wish to equip.");
+        int selection = TextHandler.validInt(unlocked - 1, 0);
 
         // Check level
         if (WeaponList.WeaponData.get(selection).getItem1().levelRequired > player.getLevel())
+        {
             System.out.println("Your level is too low!");
+            Mediator.sendToLog("Your level is too low!");
+        }
         else
         {
             player.setWeapon(WeaponList.WeaponData.get(selection).getItem1()); // Set weapon
             System.out.printf("Equipped %s%s%s!\n", ConsoleColours.TEXT_BLUE, player.getWeapon().name, ConsoleColours.TEXT_RESET);
+            Mediator.sendToLog(String.format("Equipped %s!", player.getWeapon().name));
         }
 
         TextHandler.wait(1000);
@@ -146,26 +182,35 @@ public class GameManager implements IEventHandler<GameEvent>
         System.out.println("The following spells are available:");
         System.out.printf("%s[Index - Name]%s\n\n", ConsoleColours.TEXT_GREEN, ConsoleColours.TEXT_RESET);
 
+        Mediator.sendToLog("Spells:");
+        Mediator.sendToLog("Currently equipped:" + player.getSpell().name);
+        Mediator.sendToLog("The following spells are available:");
+        Mediator.sendToLog("Index - Name");
+
         for (var s : SpellList.SpellData)
         {
             if (s.getItem2()) // If it is unlocked
             {
                 System.out.printf("%d - %s | Level required: %d\n", counter, s.getItem1().name, s.getItem1().levelRequired);
+                Mediator.sendToLog(String.format("%d - %s | Level required: %d\n", counter, s.getItem1().name, s.getItem1().levelRequired));
                 unlocked++;
                 counter++;
             }
         }
 
         // This also has the same issue as the weapon selection
-        selection = TextHandler.validInt("Choose a spell via index.", unlocked - 1, 0);
+        selection = TextHandler.validInt(unlocked - 1, 0);
 
         // Check level
         if (SpellList.SpellData.get(selection).getItem1().levelRequired > player.getLevel())
+        {
             System.out.println("Your level is too low!");
+            Mediator.sendToLog("Your level is too low!");
+        }
         else
         {
             player.setSpell(SpellList.SpellData.get(selection).getItem1()); // Set spell
-            System.out.printf("Equipped %s%s%s!\n", ConsoleColours.TEXT_BLUE, player.getSpell().name, ConsoleColours.TEXT_RESET);
+            Mediator.sendToLog(String.format("Equipped %s!", player.getSpell().name));
         }
     }
 
@@ -183,9 +228,9 @@ public class GameManager implements IEventHandler<GameEvent>
         TextHandler.clearConsole();
         Enemy e = MonsterFactory.generateEnemy(player.getLevel());
 
-        System.out.println("+-----------------------------------------------------+");
-        System.out.printf("%s%s has appeared!%s\n", ConsoleColours.TEXT_RED, e.name, ConsoleColours.TEXT_RESET);
-        System.out.println("+-----------------------------------------------------+");
+        Mediator.sendToLog("+-------------------------------------+");
+        Mediator.sendToLog(String.format("    %s has appeared!", e.name));
+        Mediator.sendToLog("+-------------------------------------+");
         while (!player.isDead() && !e.isDead())
         {
             printHeader(true);
@@ -194,8 +239,8 @@ public class GameManager implements IEventHandler<GameEvent>
 
             // ENEMY ACTION SECTION
             // This is just a dummy that does nothing but attack so...
-            System.out.printf("%s is attacking!\n", e.name);
-            System.out.println("Took " + e.attack(player) + " damage!");
+            Mediator.sendToLog("%s is attacking!", e.name);
+            Mediator.sendToLog("Took " + e.attack(player) + " damage!");
 
             printHeader(false);
 
@@ -207,12 +252,12 @@ public class GameManager implements IEventHandler<GameEvent>
         // Once we break the loop, check who died
         if (player.isDead())
         {
-            System.out.println(GameEvent.PLAYERLOSE.text);
+            Mediator.sendToLog(GameEvent.PLAYERLOSE.text);
             handleEvent(this, GameEvent.PLAYERLOSE);
         }
         else // THERE CAN BE ONLY ONE
         {
-            System.out.println(GameEvent.PLAYERWIN.text);
+            Mediator.sendToLog(GameEvent.PLAYERWIN.text);
             handleEvent(this, GameEvent.PLAYERWIN);
         }
     }
@@ -220,7 +265,8 @@ public class GameManager implements IEventHandler<GameEvent>
     private boolean battleCycle(Entity e)
     {
         battleMenu(e);
-        int choice = TextHandler.validInt("Enter number to choose action.", 6, 1);
+        Mediator.sendToLog("Select an action: (Use the buttons)");
+        int choice = TextHandler.validInt(6, 1);
 
         // PLAYER ACTION SECTION
         try
@@ -229,7 +275,7 @@ public class GameManager implements IEventHandler<GameEvent>
         }
         catch (InsufficientManaException ex)
         {
-            System.out.println(ex.message);
+            Mediator.sendToLog(ex.message);
             TextHandler.wait(1000);
             return true;
         }
@@ -256,72 +302,58 @@ public class GameManager implements IEventHandler<GameEvent>
     {
         int toSpecial = 0; // When this hits 5, the boss unleashes special attack, probably vaporising the player
         TextHandler.clearConsole();
+        Mediator.clearLog();
 
         // Show bosslist
-        System.out.println("+-----------------------------------------------------+");
-        System.out.printf("|%s%s%s|\n", ConsoleColours.TEXT_BLUE, "Bosses", ConsoleColours.TEXT_RESET);
-        System.out.println("+-----------------------------------------------------+");
+        Mediator.sendToLog("+-------------------------------------+");
+        Mediator.sendToLog("    Choose a boss to fight:");
+        Mediator.sendToLog("+-------------------------------------+");
 
         int counter = 0; // Need this to keep track of which boss we are on
         for(var x : BossList.BossData)
         {
-            System.out.printf("%d - %s [Defeated: %b] Level req: %d\n", counter, x.getItem1().name, x.getItem2(), x.getItem3());
+            Mediator.sendToLog(String.format("%d - %s [Defeated: %b] Level req: %d\n", counter, x.getItem1().name, x.getItem2(), x.getItem3()));
             counter++;
         }
 
         // Pick a boss, make sure level matches
-        int bossSelected = TextHandler.validInt("Enter number to choose boss.", counter, 0);
+        Mediator.sendToLog("Enter a number to select a boss: ");
+        int bossSelected = TextHandler.validInt(counter, 0);
         if(BossList.BossData.get(bossSelected).getItem3() > player.getLevel())
         {
-            System.out.println("Your level is too low to fight this boss! (You'll explode if you try)");
+            Mediator.sendToLog("Your level is too low to fight this boss! (You'll explode if you try)");
             TextHandler.wait(2000);
             return;
         }
 
         // Battle
         Boss boss = BossList.BossData.get(bossSelected).getItem1(); // Select boss
-        System.out.printf("You have chosen %s!\n", boss.name);
+        Mediator.sendToLog(String.format("You have chosen %s!\n", boss.name));
         TextHandler.wait(2000);
+
+        // Change controls to battle mode
+        Mediator.disableTextFields();
+        Mediator.enableButtons();
 
         while(!boss.isDead() && !player.isDead())
         {
             printHeader(true);
             // Boss quote first
-            System.out.printf("%s%s%s\n", ConsoleColours.TEXT_BLUE, boss.randomQuote(), ConsoleColours.TEXT_RESET);
+            Mediator.sendToLog(boss, boss.randomQuote());
             TextHandler.wait(1000);
 
-//            battleMenu(boss);
-//            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1); // reuse the choice variable
-//
-//            // PLAYER ACTION SECTION
-//            try
-//            {
-//                playerAction(choice, boss);
-//            }
-//            catch (InsufficientManaException ex)
-//            {
-//                System.out.println(ex.message);
-//                TextHandler.wait(1000);
-//                continue;
-//            }
-//            catch (ResetBattleLoopException ex)
-//            {
-//                continue;
-//            }
-//
-//            if (boss.isDead()) // If the enemy is dead after the player's action reevaluate the loop
-//                continue;
             if(battleCycle(boss)) continue;
 
             // ENEMY ACTION SECTION
             // Right the boss is going to use special attack UNLESS the special attack counter is 5.
             if (toSpecial == 5)
             {
-                System.out.printf("%s is unleashing a special attack!\nThis is going to hurt...\n", boss.name);
+                Mediator.sendToLog("%s is unleashing a special attack!", boss.name);
+                Mediator.sendToLog("This is going to hurt...");
                 TextHandler.wait(1000);
 
                 // Do the special attack
-                System.out.println("Took " + boss.specialAttack.apply(player) + " damage!");
+                Mediator.sendToLog("Took " + boss.specialAttack.apply(player) + " damage!");
 
                 // Reset the counter
                 toSpecial = 0;
@@ -329,10 +361,10 @@ public class GameManager implements IEventHandler<GameEvent>
             else
             {
                 // Just a regular attack :((
-                System.out.printf("%s is attacking!\n", boss.name);
+                Mediator.sendToLog(boss.name + " is attacking!");
                 TextHandler.wait(1000);
 
-                System.out.println("Took " + boss.attack.apply(player) + " damage!");
+                Mediator.sendToLog("Took " + boss.attack.apply(player) + " damage!");
 
                 // Increment special counter
                 toSpecial++;
@@ -356,14 +388,14 @@ public class GameManager implements IEventHandler<GameEvent>
         }
         else
         {
-            System.out.println(GameEvent.PLAYERWIN.text);
+            Mediator.sendToLog(GameEvent.PLAYERWIN.text);
             if (BossList.BossData.get(bossSelected).getItem2())
             {
-                System.out.println("You have already defeated this boss!");
+                Mediator.sendToLog("You have already defeated this boss!");
             }
             else
             {   // One time reward of 5 kills
-                System.out.println("You have defeated this boss for the first time!");
+                Mediator.sendToLog("You have defeated this boss for the first time!");
                 BossList.BossData.get(bossSelected).setItem2(true); // mark boss as defeated
                 for(int x = 0; x < 5; x++)
                 {
@@ -383,16 +415,16 @@ public class GameManager implements IEventHandler<GameEvent>
         TextHandler.clearConsole();
 
         // Cinematic text sequence
-        System.out.println("+-----------------------------------------------------+");
-        System.out.printf("|%s%s%s|\n", ConsoleColours.TEXT_BLUE, "Final Boss", ConsoleColours.TEXT_RESET);
-        System.out.println("+-----------------------------------------------------+");
+        Mediator.sendToLog("+-------------------------------------+");
+        Mediator.sendToLog("    Final Boss Battle");
+        Mediator.sendToLog("+-------------------------------------+");
 
         TextHandler.wait(2000);
-        System.out.println("The ground shakes violently.");
+        Mediator.sendToLog("The ground shakes violently.");
         TextHandler.wait(2000);
-        System.out.println("A small, dark figure appears in the center of the room.");
+        Mediator.sendToLog("A small, dark figure appears in the center of the room.");
         TextHandler.wait(2000);
-        System.out.println("The room bursts into flames.");
+        Mediator.sendToLog("The room bursts into flames.");
 
         // Battle
         ExBoss boss = BossList.Hirina;
@@ -401,57 +433,37 @@ public class GameManager implements IEventHandler<GameEvent>
             printHeader(true);
 
             // Boss quote first
-            System.out.printf("%s%s%s\n", ConsoleColours.TEXT_BLUE, boss.randomQuote(), ConsoleColours.TEXT_RESET);
+            Mediator.sendToLog(boss, boss.randomQuote());
             TextHandler.wait(1000);
 
-//            battleMenu(boss);
-//            int choice = TextHandler.validInt("Enter number to choose action.", 6, 1); // reuse the choice variable
-//
-//            // PLAYER ACTION SECTION
-//            try
-//            {
-//                playerAction(choice, boss);
-//            }
-//            catch (InsufficientManaException ex)
-//            {
-//                System.out.println(ex.message);
-//                TextHandler.wait(1000);
-//                continue;
-//            }
-//            catch (ResetBattleLoopException ex)
-//            {
-//                continue;
-//            }
-//
-//            if (boss.isDead()) // If the enemy is dead reevaluate the loop
-//                continue;
             if(battleCycle(boss)) continue;
 
             // ENEMY ACTION SECTION
             // Right the boss is going to attack UNLESS the special attack counter is 5.
             if (toSpecial == 5)
             {
-                System.out.printf("%sPhase 2: %s is unleashing a special attack!%s\nThis is going to hurt...\n", ConsoleColours.TEXT_YELLOW, boss.name, ConsoleColours.TEXT_RESET);
+                Mediator.sendToLog(String.format("Phase 2: %s is unleashing a special attack!", boss.name));
+                Mediator.sendToLog("This is going to hurt...");
                 TextHandler.wait(1000);
 
                 // Do the special attack
-                System.out.println("Took " + boss.specialAttack.apply(player) + " damage!");
-
-                // Reset the counter
+                Mediator.sendToLog("Took " + boss.specialAttack.apply(player) + " damage!");
             }
             else if (toSpecial == 10)
             {
                 // second special attack
-                System.out.printf("%sPhase 3: %s is unleashing a special attack!%s\nPrepare for a lot of stinging...\n", ConsoleColours.TEXT_YELLOW, boss.name, ConsoleColours.TEXT_RESET);
+                Mediator.sendToLog(String.format("Phase 3: %s is kicking it up a notch!", boss.name));
+                Mediator.sendToLog("Prepare for a lot of stinging!");
                 TextHandler.wait(1000);
 
                 // Do the special attack
-                System.out.println("Took " + boss.specialAttack2.apply(player) + " damage!");
+                Mediator.sendToLog("Took " + boss.specialAttack2.apply(player) + " damage!");
             }
             else if (toSpecial == 15 || toSpecial > 20)
             {
                 // third special attack
-                System.out.printf("%sPhase 4: %s is unleashing a special attack!%s\n😬...\n", ConsoleColours.TEXT_YELLOW, boss.name, ConsoleColours.TEXT_RESET);
+                Mediator.sendToLog(String.format("Phase 4: %s has had it with you.", boss.name));
+                Mediator.sendToLog("I hope your affairs are in order...");
                 TextHandler.wait(1000);
 
                 // Do the special attack
@@ -460,10 +472,10 @@ public class GameManager implements IEventHandler<GameEvent>
             else
             {
                 // Just a regular attack :((
-                System.out.printf("%s is attacking!\n", boss.name);
+                Mediator.sendToLog(String.format("%s is attacking!\n", boss.name));
                 TextHandler.wait(1000);
 
-                System.out.println("Took " + boss.attack.apply(player) + " damage!");
+                Mediator.sendToLog("Took " + boss.attack.apply(player) + " damage!");
 
             }
 
@@ -482,12 +494,12 @@ public class GameManager implements IEventHandler<GameEvent>
         // Ok so someone died.
         if (player.isDead())
         {
-            System.out.println(GameEvent.PLAYERLOSE.text);
+            Mediator.sendToLog(GameEvent.PLAYERLOSE.text);
             handleEvent(this, GameEvent.PLAYERLOSE);
         }
         else
         {
-            System.out.println(GameEvent.PLAYERWIN.text);
+            Mediator.sendToLog(GameEvent.PLAYERWIN.text);
             handleEvent(this, GameEvent.PLAYERWIN);
         }
     }
@@ -495,28 +507,30 @@ public class GameManager implements IEventHandler<GameEvent>
     // Removes duplicate code
     private void battleMenu(Entity enemy)
     {
-        System.out.println(enemy.getHealthBar());
+        //System.out.println(enemy.getHealthBar());
+        Mediator.updateEnemy(enemy);
         // Put some space
         System.out.print("\n\n");
 
         // Show player stats and make sure they are not defending
-        System.out.println(player.getHealthBar());
-        System.out.println(player.getMagicBar());
+        //System.out.println(player.getHealthBar());
+        //System.out.println(player.getMagicBar());
+        Mediator.updatePlayer(player);
         player.isDefending = false;
 
         // Now the menu
-        System.out.println("What will you do?");
-        System.out.println("1 - Fight!");
-        System.out.println("2 - Defend!");
-        System.out.println("3 - Heal! (20 MP)");
-        System.out.printf ("4 - Magic!(%d MP)\n", player.getSpell().cost);
-        System.out.println("5 - Nothing!"); // The shell has spoken!
-        System.out.println("6 - Surrender..");
+        Mediator.sendToLog("What will you do?");
+        Mediator.sendToLog("1 - Fight!");
+        Mediator.sendToLog("2 - Defend!");
+        Mediator.sendToLog("3 - Heal! (20 MP)");
+        Mediator.sendToLog(String.format("4 - Magic!(%d MP)", player.getSpell().cost));
+        Mediator.sendToLog("5 - Nothing!"); // The shell has spoken!
+        Mediator.sendToLog("6 - Surrender..");
     }
 
     // Helper method to remove duplicated code
     // Returns true if the player doesn't do anything that changes the gamestate
-    // i.e heal with insufficient mana
+    // i.e. heal with insufficient mana
     private void playerAction(int choice, Entity e) throws InsufficientManaException, ResetBattleLoopException
     {
         // PLAYER ACTION SECTION
@@ -526,15 +540,18 @@ public class GameManager implements IEventHandler<GameEvent>
         switch (choice)
         {
             case 1:
-                System.out.println("You attack!");
-                System.out.println("Dealt " + player.getWeapon().use(e) + " damage!");
+                Mediator.sendToLog("You attack!");
+                Mediator.sendToLog("Dealt " + player.getWeapon().use(e) + " damage!");
+                Mediator.updateEnemy(e);
                 break;
             case 2:
                 player.isDefending = true;
                 break;
             case 3:
                 int amount = player.heal(); // Throws exception if not enough mana
-                System.out.printf("You healed %d health!\n", amount);
+                Mediator.sendToLog(String.format("You healed %d health!\n", amount));
+                Mediator.updatePlayer(player);
+                break;
             case 4:
                 // Check if player has enough mana
                 if (player.getSpell().cost > player.getMP())
@@ -544,26 +561,30 @@ public class GameManager implements IEventHandler<GameEvent>
                 else
                 {
                     // Cast spell
-                    System.out.println("You cast " + player.getSpell().name + "!");
+                    Mediator.sendToLog("You cast " + player.getSpell().name + "!");
                     // Check for failure
                     float hit = new Random().nextFloat(0, 1);
                     if (hit < player.getSpell().failrate)
                     {
-                        System.out.println("Ah whoops.. You should've paid more attention in wizard school!");
+                        Mediator.sendToLog("Ah whoops.. You should've paid more attention in wizard school!");
                         TextHandler.wait(1000);
-                        System.out.println("Took " + player.getSpell().use(player) + " damage");
+                        Mediator.sendToLog("Took " + player.getSpell().use(player) + " damage");
                     }
                     else
                     {
-                        System.out.println("Casting spell!");
-                        System.out.println("Dealt " + player.getSpell().use(e) + " damage");
+                        Mediator.sendToLog("Casting spell!");
+                        Mediator.sendToLog("Dealt " + player.getSpell().use(e) + " damage");
                         player.setMP(player.getMP() - player.getSpell().cost); // Subtract mana
                     }
+                    Mediator.updateEnemy(e);
+                    Mediator.updatePlayer(player);
                 }
             case 5: // Why did i include this option it's useless
                 break;
             case 6:
                 player.takeDamage(100000, DamageType.PURE);
+                Mediator.sendToLog("You surrender!");
+                Mediator.updatePlayer(player);
                 throw new ResetBattleLoopException();
         }
     }
@@ -585,18 +606,18 @@ public class GameManager implements IEventHandler<GameEvent>
     {
         if(flag)
         {
-            System.out.println("===========================");
-            System.out.println("==     START OF TURN     ==");
-            System.out.println("===========================");
+            Mediator.sendToLog("===========================");
+            Mediator.sendToLog("==     START OF TURN     ==");
+            Mediator.sendToLog("===========================");
         }
         else
         {
-            System.out.println("===========================");
-            System.out.println("==      END OF TURN      ==");
-            System.out.println("===========================");
+            Mediator.sendToLog("===========================");
+            Mediator.sendToLog("==      END OF TURN      ==");
+            Mediator.sendToLog("===========================");
         }
 
-        System.out.println("\n");
+        Mediator.logBreak();
     }
 
     // Tells main function whether a player is loaded or not

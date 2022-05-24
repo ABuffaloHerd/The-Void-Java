@@ -4,7 +4,7 @@ import com.buffalo.thevoid.entity.IEntity;
 
 import java.util.function.Function;
 
-public class AbstractWeapon
+public abstract class AbstractWeapon
 {
     protected final Function<IEntity, Integer> standardAttackMethod;
     public final String name;

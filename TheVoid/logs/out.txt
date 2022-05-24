@@ -97,3 +97,7 @@ Logged event: You must create a player first.
 Logged event: Select new game or load game to get started.
 Logged event: You must create a player first.
 Logged event: Select new game or load game to get started.
+Logged event: You must create a player first.
+Logged event: Select new game or load game to get started.
+Logged event: You must create a player first.
+Logged event: Select new game or load game to get started.

@@ -6,11 +6,13 @@ import com.buffalo.thevoid.equipment.Spell;
 import com.buffalo.thevoid.equipment.SpellList;
 import com.buffalo.thevoid.equipment.Weapon;
 import com.buffalo.thevoid.equipment.WeaponList;
-import com.buffalo.thevoid.gui.LogPanel;
 import com.buffalo.thevoid.gui.Mediator;
+import com.buffalo.thevoid.io.InputQueue;
+import com.buffalo.thevoid.io.TextHandler;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Objects;
 import java.util.Scanner;
 
 // Package only class that handles creating a new player.
@@ -23,13 +25,22 @@ class NewGame
 
     public static Player newPlayer()
     {
-        String name;
-        Scanner s = new Scanner(System.in);
+        String name = "";
+        //Scanner s = new Scanner(System.in);
 
         System.out.println("What is your name? ");
-//        Mediator.getMainFrame().logPanel.write("What is your name? ");
+        Mediator.sendToLog(null, "What is your name?");
 
-        name = s.nextLine();
+        do
+        {
+            name = InputQueue.dequeue();
+            if(name == null)
+                name = "";
+
+            TextHandler.wait(100);
+        }
+        while(name.isEmpty());
+        //name = s.nextLine();
 
         return new Player(name, Config.START_HEALTH, Config.START_MANA,
                 Config.START_DEFENSE, Config.START_RESISTANCE,
@@ -76,6 +87,7 @@ class NewGame
         catch(Exception e)
         {
             System.out.println("Error loading player data. Check player.dat");
+            Mediator.sendToLog(null, "Error loading player data. Check player.dat");
             return null;
         }
     }

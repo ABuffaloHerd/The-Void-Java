@@ -1,6 +1,7 @@
 package com.buffalo.thevoid.gui;
 
-import com.buffalo.thevoid.event.GameEvent;
+import com.buffalo.thevoid.entity.Entity;
+import com.buffalo.thevoid.entity.Player;
 import com.buffalo.thevoid.main.GameManager;
 import com.buffalo.thevoid.main.Program;
 import lombok.Getter;
@@ -13,7 +14,7 @@ public class Mediator
 {
     // Only one of each of these is allowed. Shared between all instances of this class.
     // Run constructor only once. Use blank constructor to make a new instance that shares the data.
-    // This keeps the instances private to each class that needs it.
+    // This keeps the instances private and only exposes the methods used to communicate between the classes.
     private static @Getter @Setter MainFrame mainFrame;
     private static @Getter @Setter Program program;
     private static @Getter @Setter GameManager gameManager;
@@ -25,20 +26,74 @@ public class Mediator
         Mediator.gameManager = gameManager;
     }
 
-    public Mediator() {}
+    public Mediator()
+    {
 
-    public void sendToLog(Object sender, String message)
+    }
+
+    public static void clearLog()
+    {
+        mainFrame.logPanel.clear();
+    }
+
+    public static void sendToLog(Object sender, String message)
     {
         mainFrame.logPanel.handleEvent(sender, message);
     }
 
-    public void sendToGame(Object sender, GameEvent args)
+    public static void sendToLog(String message)
     {
-        gameManager.handleEvent(sender, args);
+        mainFrame.logPanel.handleEvent(null, message);
     }
 
-    public void sendToProgram(Object sender, Integer args)
+    public static void logBreak(int count)
     {
-        program.handleEvent(sender, args);
+        for(int i = 0; i < count; i++)
+        {
+            mainFrame.logPanel.handleEvent(null, "");
+        }
     }
+
+    public static void logBreak()
+    {
+        mainFrame.logPanel.handleEvent(null, "");
+    }
+
+    //******************************************************************************************************************
+    // Control methods
+    //******************************************************************************************************************
+    public static void disableButtons()
+    {
+        mainFrame.buttonPanel.disableAllButtons();
+    }
+
+    public static void enableButtons()
+    {
+        mainFrame.buttonPanel.enableAllButtons();
+    }
+
+    public static void disableTextFields()
+    {
+        mainFrame.logPanel.disableInput();
+    }
+
+    public static void enableTextFields()
+    {
+        mainFrame.logPanel.enableInput();
+    }
+
+    //******************************************************************************************************************
+    // Display methods
+    //******************************************************************************************************************
+
+    public static void updatePlayer(Player p)
+    {
+        mainFrame.playerPanel.updateDisplay(p);
+    }
+
+    public static void updateEnemy(Entity e)
+    {
+        mainFrame.entityPanel.updateDisplay(e);
+    }
+
 }

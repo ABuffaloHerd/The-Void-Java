@@ -2,8 +2,10 @@ package com.buffalo.thevoid.gui;
 
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
+import com.buffalo.thevoid.io.InputQueue;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,7 +29,7 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         // Border
         setBorder(BorderFactory.createTitledBorder("Log"));
 
-        this.log = new JTextArea(25, 25);
+        this.log = new JTextArea(25, 50);
         this.queue = new LinkedList<>();
         this.input = new JTextField();
         this.maxEntries = 43;
@@ -37,6 +39,17 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         log.setBackground(Color.white);
         log.setVisible(true);
         log.setBorder(BorderFactory.createLineBorder(Color.black));
+        log.setLineWrap(true); // Wrap long lines
+
+        // Using whatever means necessary to stop the log area from resizing itself.
+        JScrollPane scroll = new JScrollPane(log);
+        scroll.setPreferredSize(new Dimension(400, 700));
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        scroll.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        // autoscroll
+        DefaultCaret caret = (DefaultCaret)log.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         // Input settings
         input.setColumns(25);
@@ -47,40 +60,40 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         // Action listener for the input field
         input.addActionListener(e ->
         {
-            // Send the command to program using raise
-            try
-            {
-                raise(Integer.parseInt(input.getText()));
-            }
-            catch(NumberFormatException ex)
-            {
-                raise(-1);
-                write("Input an integer.");
-            }
+            // Toss into input queue
+            InputQueue.enqueue(input.getText());
 
             // Clear the input field
             input.setText("");
         });
 
+        clear(); // Make sure log is empty.
+
+        // Add the text area to the panel
+        super.add(scroll, BorderLayout.NORTH);
+        super.add(input, BorderLayout.SOUTH);
+    }
+
+    public void clear()
+    {
         // To make the listbox empty, stuff the whole thing with empty messages
         // This also means stuff the queue with empty messages
+        queue.clear();
         for (int i = 0; i < maxEntries; i++)
         {
             queue.add(new LogEntry(""));
         }
-
         updateText();
-
-        // Add the text area to the panel
-        super.add(log, BorderLayout.NORTH);
-        super.add(input, BorderLayout.SOUTH);
     }
 
-    private void write(String message)
+    protected void write(String message)
     {
-        // Add the message to the queue
+        // Add the new log entry to the queue
         queue.add(new LogEntry(message));
-        queue.poll();
+        // Pop the oldest entry off the queue if we have too many
+        if(queue.size() > maxEntries)
+            queue.poll();
+        // Update the text
         updateText();
     }
 
@@ -93,16 +106,17 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         }
     }
 
-    public void disableInput()
+    protected void disableInput()
     {
         input.setEnabled(false);
     }
 
-    public void enableInput()
+    protected void enableInput()
     {
         input.setEnabled(true);
     }
 
+    // TODO: Check for safe removal
     private void raise(Integer args)
     {
         for(var subscriber : subscribers)
@@ -114,13 +128,14 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
     @Override
     public void handleEvent(Object sender, String args)
     {
-        // Add the new log entry to the queue
-        queue.add(new LogEntry(args));
-        // Pop the oldest entry off the queue if we have too many
-        if(queue.size() > maxEntries)
-            queue.poll();
-        // Update the text
-        updateText();
+        if(sender == null)
+        {
+            write(args);
+        }
+        else
+        {
+            write(sender.getClass().getSimpleName() + ": " + args);
+        }
     }
 
     @Override
