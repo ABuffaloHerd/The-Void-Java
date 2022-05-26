@@ -25,7 +25,7 @@ public class EntityPanel extends JPanel
         RESLabel = new JLabel("");
 
         // hp field first
-        hpField = new JTextField(50);
+        hpField = new JTextField(65);
         hpField.setFont(new Font("Consolas", Font.PLAIN, 16));
         hpField.setBackground(Color.BLACK);
         hpField.setForeground(Color.GREEN);

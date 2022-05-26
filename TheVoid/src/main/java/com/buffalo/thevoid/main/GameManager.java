@@ -239,7 +239,7 @@ public class GameManager implements IEventHandler<GameEvent>
 
             // ENEMY ACTION SECTION
             // This is just a dummy that does nothing but attack so...
-            Mediator.sendToLog("%s is attacking!", e.name);
+            Mediator.sendToLog(String.format("%s is attacking!", e.name));
             Mediator.sendToLog("Took " + e.attack(player) + " damage!");
 
             printHeader(false);
@@ -348,7 +348,7 @@ public class GameManager implements IEventHandler<GameEvent>
             // Right the boss is going to use special attack UNLESS the special attack counter is 5.
             if (toSpecial == 5)
             {
-                Mediator.sendToLog("%s is unleashing a special attack!", boss.name);
+                Mediator.sendToLog(String.format("%s is unleashing a special attack!", boss.name));
                 Mediator.sendToLog("This is going to hurt...");
                 TextHandler.wait(1000);
 

@@ -55,6 +55,7 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         input.setColumns(25);
         input.setEditable(true);
         input.setBackground(Color.white);
+        input.setFont(new Font("Consolas", Font.PLAIN, 16));
         input.setVisible(true);
 
         // Action listener for the input field

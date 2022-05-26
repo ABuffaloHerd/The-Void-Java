@@ -1,0 +1,9 @@
+gui upgrade
+
+do the thing
+
+change def and res labels to jtextfields
+controls changes configuration depending on which menu
+no more input area - replace newgame with messagebox
+
+change log background and colour - looks editable

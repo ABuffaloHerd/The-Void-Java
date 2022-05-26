@@ -1,9 +1,9 @@
-Name=2
-Level=0
+Name=Steve
+Level=16
 KillCount=0
-HP=200
-MP=50
-DEF=10
-RES=0
-WeaponsUnlocked=0
-SpellsUnlocked=0
+HP=2000
+MP=750
+DEF=130
+RES=50
+WeaponsUnlocked=9
+SpellsUnlocked=6

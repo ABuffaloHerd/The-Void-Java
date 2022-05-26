@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class ButtonPanel extends JPanel
 {
-    private final int BUTTONCOUNT = 7;
+    private final int BUTTONCOUNT = 6;
     public final ArrayList<JButton> buttons = new ArrayList<>();
 
     public ButtonPanel()
