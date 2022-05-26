@@ -40,7 +40,7 @@ public class GameManager implements IEventHandler<GameEvent>
                     {
                         player = NewGame.newPlayer();
                         Mediator.updatePlayer(player);
-                        playerLoaded = true;
+                        playerLoaded = player != null;
                     }
             case LOADGAME ->
                     {
@@ -73,12 +73,17 @@ public class GameManager implements IEventHandler<GameEvent>
             case BATTLE ->
                     {
                         Mediator.disableTextFields();
-                        Mediator.enableButtons();
+                        Mediator.setButtons(6);
                         battle();
                     }
-            case BOSS -> bossBattle();
+            case BOSS ->
+                    {
+                        Mediator.setButtons(6);
+                        bossBattle();
+                    }
             case EXBOSS ->
                     {
+                        Mediator.setButtons(6);
                         Mediator.disableTextFields();
                         Mediator.enableButtons();
                         finalBoss();

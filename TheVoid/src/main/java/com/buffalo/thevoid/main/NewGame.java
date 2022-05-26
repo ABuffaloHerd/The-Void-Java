@@ -10,6 +10,7 @@ import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.InputQueue;
 import com.buffalo.thevoid.io.TextHandler;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Objects;
@@ -25,22 +26,13 @@ class NewGame
 
     public static Player newPlayer()
     {
-        String name = "";
-        //Scanner s = new Scanner(System.in);
+        String name = JOptionPane.showInputDialog("What is your name?");
 
-        System.out.println("What is your name? ");
-        Mediator.sendToLog(null, "What is your name?");
-
-        do
+        // If the user presses cancel, return null
+        if(name == null)
         {
-            name = InputQueue.dequeue();
-            if(name == null)
-                name = "";
-
-            TextHandler.wait(100);
+            return null;
         }
-        while(name.isEmpty());
-        //name = s.nextLine();
 
         return new Player(name, Config.START_HEALTH, Config.START_MANA,
                 Config.START_DEFENSE, Config.START_RESISTANCE,

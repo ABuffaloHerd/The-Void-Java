@@ -8,16 +8,28 @@ import java.util.ArrayList;
 
 public class ButtonPanel extends JPanel
 {
-    private final int BUTTONCOUNT = 6;
     public final ArrayList<JButton> buttons = new ArrayList<>();
 
     public ButtonPanel()
     {
+        this(6);
+    }
+
+    public ButtonPanel(int BUTTONCOUNT)
+    {
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createTitledBorder("Controls"));
+        constructButtons(BUTTONCOUNT);
+    }
+
+    private void constructButtons(int BUTTONCOUNT)
+    {
         GridBagConstraints c = new GridBagConstraints();
 
+        c.weightx = 0;
+
         // Add buttons using loops.
+        buttons.clear();
 
         // Button values start at 1, not 0
         for(int x = 1; x <= BUTTONCOUNT; x++)
@@ -29,6 +41,8 @@ public class ButtonPanel extends JPanel
         {
             for(int x = 0; x < buttons.size(); x++)
             {
+                c.gridwidth = 1;
+                c.gridheight = 1;
                 c.gridx = x % 2; // 0 or 1
                 c.gridy = x / 2; // 0 - whatever
                 add(buttons.get(x), c);
@@ -40,6 +54,8 @@ public class ButtonPanel extends JPanel
             {
                 c.gridx = x % 2;
                 c.gridy = x / 2;
+                c.gridwidth = 1;
+                c.gridheight = 1;
                 add(buttons.get(x), c);
 
                 if(x == buttons.size() - 1)
@@ -69,6 +85,14 @@ public class ButtonPanel extends JPanel
             button.setEnabled(true);
         }
     }
+
+    public void rebuild(int count)
+    {
+        removeAll();
+        constructButtons(count);
+        revalidate();
+        repaint();
+    }
 }
 
 class CustomButton extends JButton
@@ -76,7 +100,11 @@ class CustomButton extends JButton
     public CustomButton(String text, Integer value)
     {
         super(text);
-        setMargin(new Insets(10, 70, 10, 70));
+        setFont(new Font("Consolas", Font.PLAIN, 12));
+        setMaximumSize(new Dimension(100, 100));
+        setMaximumSize(new Dimension(100, 100));
+        setPreferredSize(new Dimension(100, 100));
+        setMargin(new Insets(5, 70, 5, 70));
 
         this.addActionListener(e ->
                 InputQueue.enqueue(value.toString()));

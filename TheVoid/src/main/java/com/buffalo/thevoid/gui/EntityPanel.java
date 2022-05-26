@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class EntityPanel extends JPanel
 {
-    protected @Getter JLabel DEFLabel, RESLabel;
+    protected @Getter JTextField DEFLabel, RESLabel;
 
     protected @Getter JTextField hpField;
 
@@ -21,8 +21,21 @@ public class EntityPanel extends JPanel
 
         setLayout(layout);
         //defense and resistance labels
-        DEFLabel = new JLabel("");
-        RESLabel = new JLabel("");
+        DEFLabel = new JTextField(10);
+        DEFLabel.setFont(new Font("Consolas", Font.PLAIN, 16));
+        DEFLabel.setBackground(Color.black);
+        DEFLabel.setForeground(Color.orange);
+        DEFLabel.setEditable(false);
+        DEFLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.WHITE, Color.GRAY));
+        DEFLabel.setVisible(true);
+
+        RESLabel = new JTextField(10);
+        RESLabel.setFont(new Font("Consolas", Font.PLAIN, 16));
+        RESLabel.setBackground(Color.black);
+        RESLabel.setForeground(Color.cyan);
+        RESLabel.setEditable(false);
+        RESLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.WHITE, Color.GRAY));
+        RESLabel.setVisible(true);
 
         // hp field first
         hpField = new JTextField(65);

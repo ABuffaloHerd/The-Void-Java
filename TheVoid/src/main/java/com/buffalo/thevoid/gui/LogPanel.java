@@ -6,6 +6,7 @@ import com.buffalo.thevoid.io.InputQueue;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -15,7 +16,7 @@ import java.util.Set;
 public class LogPanel extends JPanel implements IEventHandler<String>, IEventPublisher
 {
     private final JTextArea log;
-    private final JTextField input; // Used to enter a command. Saves time and code.
+    //private final JTextField input; // Used to enter a command. Saves time and code.
     private final Queue<LogEntry> queue; // Keeps track of the log entries
     private final int maxEntries; // The maximum number of entries to keep
 
@@ -29,17 +30,18 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         // Border
         setBorder(BorderFactory.createTitledBorder("Log"));
 
-        this.log = new JTextArea(25, 50);
+        this.log = new JTextArea(50, 50);
         this.queue = new LinkedList<>();
-        this.input = new JTextField();
+        //this.input = new JTextField();
         this.maxEntries = 43;
 
         // LogPanel settings
         log.setEditable(false);
-        log.setBackground(Color.white);
+        log.setBackground(Color.gray);
+        log.setForeground(Color.black);
+        log.setLineWrap(true);
         log.setVisible(true);
         log.setBorder(BorderFactory.createLineBorder(Color.black));
-        log.setLineWrap(true); // Wrap long lines
 
         // Using whatever means necessary to stop the log area from resizing itself.
         JScrollPane scroll = new JScrollPane(log);
@@ -52,27 +54,27 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         // Input settings
-        input.setColumns(25);
-        input.setEditable(true);
-        input.setBackground(Color.white);
-        input.setFont(new Font("Consolas", Font.PLAIN, 16));
-        input.setVisible(true);
-
-        // Action listener for the input field
-        input.addActionListener(e ->
-        {
-            // Toss into input queue
-            InputQueue.enqueue(input.getText());
-
-            // Clear the input field
-            input.setText("");
-        });
+//        input.setColumns(25);
+//        input.setEditable(true);
+//        input.setBackground(Color.white);
+//        input.setFont(new Font("Consolas", Font.PLAIN, 16));
+//        input.setVisible(true);
+//
+//        // Action listener for the input field
+//        input.addActionListener(e ->
+//        {
+//            // Toss into input queue
+//            InputQueue.enqueue(input.getText());
+//
+//            // Clear the input field
+//            input.setText("");
+//        });
 
         clear(); // Make sure log is empty.
 
         // Add the text area to the panel
         super.add(scroll, BorderLayout.NORTH);
-        super.add(input, BorderLayout.SOUTH);
+        //super.add(input, BorderLayout.SOUTH);
     }
 
     public void clear()
@@ -109,12 +111,12 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
 
     protected void disableInput()
     {
-        input.setEnabled(false);
+        //input.setEnabled(false);
     }
 
     protected void enableInput()
     {
-        input.setEnabled(true);
+        //input.setEnabled(true);
     }
 
     // TODO: Check for safe removal

@@ -9,7 +9,7 @@ import java.awt.*;
 public class PlayerPanel extends EntityPanel
 {
     private final JTextField mpField;
-    private final JLabel levelLabel;
+    private final JTextField levelLabel;
 
     public PlayerPanel(String title)
     {
@@ -25,7 +25,15 @@ public class PlayerPanel extends EntityPanel
         mpField.setVisible(true);
 
         // Level label
-        levelLabel = new JLabel("Level: ");
+        levelLabel = new JTextField(10);
+        levelLabel.setFont(new Font("Consolas", Font.PLAIN, 16));
+        levelLabel.setBackground(Color.black);
+        levelLabel.setForeground(Color.yellow);
+        levelLabel.setEditable(false);
+        levelLabel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.WHITE, Color.GRAY));
+        levelLabel.setVisible(true);
+
+        levelLabel.setText("Level: -0");
 
         // Inherited fields from EntityPanel
         addComponent(this.hpField, 0, 0, 2, 1);
@@ -42,6 +50,10 @@ public class PlayerPanel extends EntityPanel
     public void updateDisplay(Player p)
     {
         super.updateDisplay(p);
+        if(p == null)
+        {
+            return;
+        }
         mpField.setText(p.getMagicBar().toString());
         levelLabel.setText("Level: " + p.getLevel());
     }

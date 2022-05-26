@@ -88,6 +88,12 @@ public class TextHandler
         {
             boolean lock = true;
 
+            // Empty the queue
+            if(!InputQueue.queue.isEmpty())
+            {
+                InputQueue.queue.clear();
+            }
+
             while(lock)
             {
                 try
