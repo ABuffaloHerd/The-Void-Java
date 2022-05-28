@@ -16,7 +16,6 @@ import java.util.Set;
 public class LogPanel extends JPanel implements IEventHandler<String>, IEventPublisher
 {
     private final JTextArea log;
-    //private final JTextField input; // Used to enter a command. Saves time and code.
     private final Queue<LogEntry> queue; // Keeps track of the log entries
     private final int maxEntries; // The maximum number of entries to keep
 
@@ -25,14 +24,15 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
 
     public LogPanel()
     {
-        super(new BorderLayout());
+        super();
+
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // Border
         setBorder(BorderFactory.createTitledBorder("Log"));
 
-        this.log = new JTextArea(50, 50);
+        this.log = new JTextArea();
         this.queue = new LinkedList<>();
-        //this.input = new JTextField();
         this.maxEntries = 43;
 
         // LogPanel settings
@@ -40,6 +40,7 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         log.setBackground(Color.gray);
         log.setForeground(Color.black);
         log.setLineWrap(true);
+        log.setColumns(50);
         log.setVisible(true);
         log.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -53,28 +54,10 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
         DefaultCaret caret = (DefaultCaret)log.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
-        // Input settings
-//        input.setColumns(25);
-//        input.setEditable(true);
-//        input.setBackground(Color.white);
-//        input.setFont(new Font("Consolas", Font.PLAIN, 16));
-//        input.setVisible(true);
-//
-//        // Action listener for the input field
-//        input.addActionListener(e ->
-//        {
-//            // Toss into input queue
-//            InputQueue.enqueue(input.getText());
-//
-//            // Clear the input field
-//            input.setText("");
-//        });
-
         clear(); // Make sure log is empty.
 
         // Add the text area to the panel
-        super.add(scroll, BorderLayout.NORTH);
-        //super.add(input, BorderLayout.SOUTH);
+        super.add(scroll);
     }
 
     public void clear()

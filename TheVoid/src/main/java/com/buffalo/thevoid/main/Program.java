@@ -69,7 +69,7 @@ public class Program implements IEventPublisher
         {
             TextHandler.clearConsole();
             Mediator.clearLog();
-            Mediator.setButtons(12);
+            Mediator.setButtons(11);
 
             Mediator.updateEnemy(null);
 

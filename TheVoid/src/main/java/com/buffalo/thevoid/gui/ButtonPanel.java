@@ -26,7 +26,7 @@ public class ButtonPanel extends JPanel
     {
         GridBagConstraints c = new GridBagConstraints();
 
-        c.weightx = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
 
         // Add buttons using loops.
         buttons.clear();
@@ -45,6 +45,7 @@ public class ButtonPanel extends JPanel
                 c.gridheight = 1;
                 c.gridx = x % 2; // 0 or 1
                 c.gridy = x / 2; // 0 - whatever
+                c.weightx = 1;
                 add(buttons.get(x), c);
             }
         }
@@ -56,6 +57,7 @@ public class ButtonPanel extends JPanel
                 c.gridy = x / 2;
                 c.gridwidth = 1;
                 c.gridheight = 1;
+                c.weightx = 1;
                 add(buttons.get(x), c);
 
                 if(x == buttons.size() - 1)
