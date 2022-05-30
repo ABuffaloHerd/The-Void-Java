@@ -1,5 +1,6 @@
 package com.buffalo.thevoid.main;
 
+import com.buffalo.thevoid.db.Database;
 import com.buffalo.thevoid.entity.*;
 import com.buffalo.thevoid.equipment.SpellList;
 import com.buffalo.thevoid.equipment.WeaponList;
@@ -14,18 +15,17 @@ import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.FileHandler;
 import com.buffalo.thevoid.io.TextHandler;
 
-import javax.print.attribute.standard.Media;
-import java.sql.SQLOutput;
 import java.util.Random;
 
 /**
- * This bad boy contains all game functions, while the actual loop is handled by the main function.
+ * This bad boy contains ALL game related functions, while the actual loop is handled by the main function.
  */
 public class GameManager implements IEventHandler<GameEvent>
 {
     // NOTE: objects are pass by reference
     private Player player;
     private boolean playerLoaded;
+    private Database database;
 
     // calls methods to handle game events
     // program flow returns to main function after this.
@@ -161,6 +161,7 @@ public class GameManager implements IEventHandler<GameEvent>
         // correspond to the actual weapon index.
         // However, this shouldn't happen to begin with so i'm going to ignore it.
         Mediator.sendToLog(this, "Enter the index of the weapon you wish to equip.");
+        Mediator.setButtons(unlocked);
         int selection = TextHandler.validInt(unlocked - 1, 0);
 
         // Check level
@@ -221,12 +222,12 @@ public class GameManager implements IEventHandler<GameEvent>
 
     /**
      * Battle a generic enemy.
-     * THIS IS WHAT NEEDS TO HAPPEN:
-     * 1. Generate a random enemy
-     * 2. Battle
-     * 3. If you win, increase killcount (handed over to the handleEvent method)
-     * 4. If you lose, DIE
-     * 6. After winning, evaluate if you should level up
+     * THIS IS WHAT NEEDS TO HAPPEN:<br>
+     * 1. Generate a random enemy<br>
+     * 2. Battle<br>
+     * 3. If you win, increase killcount (handed over to the handleEvent method)<br>
+     * 4. If you lose, DIE<br>
+     * 6. After winning, evaluate if you should level up<br>
      */
     private void battle()
     {
@@ -296,12 +297,12 @@ public class GameManager implements IEventHandler<GameEvent>
     /**
      * Boss battle
      * This is what needs to happen:
-     * 1. Show bosslist
-     * 1.5 Pick a boss, make sure level is suitable.
-     * 2. Battle
-     * 3. If you win, increase killcount by 5, then check level (handled by handleEvent)
-     * 4. If you lose, DIE
-     * Might be able to cram some of the above battle method into its own section.
+     * 1. Show bosslist<br>
+     * 1.5 Pick a boss, make sure level is suitable.<br>
+     * 2. Battle<br>
+     * 3. If you win, increase killcount by 5, then check level (handled by handleEvent)<br>
+     * 4. If you lose, DIE<br>
+     * Might be able to cram some of the above battle method into its own section.<br>
      */
     private void bossBattle()
     {

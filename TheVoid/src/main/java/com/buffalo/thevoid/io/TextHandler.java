@@ -11,7 +11,6 @@ import java.util.Scanner;
 public class TextHandler
 {
     private static final Scanner s = new Scanner(System.in);
-    private static final InputQueue q = new InputQueue();
 
     /**
      * Validates input to match the system used here.

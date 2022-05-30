@@ -11,7 +11,6 @@ import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.LogEventHandler;
 import com.buffalo.thevoid.io.TextHandler;
-import org.w3c.dom.Text;
 
 import javax.swing.*;
 import java.util.HashSet;
@@ -47,7 +46,7 @@ public class Program implements IEventPublisher
         SwingUtilities.invokeLater(MainFrame::new);
 
         // Make main thread wait for gui thread to finish
-        TextHandler.wait(1000);
+        TextHandler.wait(2000);
 
         // Register the game event handlers
         program.addEventHandler(manager);
