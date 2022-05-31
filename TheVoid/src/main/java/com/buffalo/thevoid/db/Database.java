@@ -51,6 +51,14 @@ public class Database extends AbstractDBManager
         String sql = DBUtils.tableBuilder(table, map);
     }
 
+    public void clearAll()
+    {
+        // Drop player table
+        String sql = "DROP TABLE PLAYER";
+
+        dbUtils.executeStatement(sql);
+    }
+
     public void writePlayer(Player player)
     {
         // Convert player data to a map
@@ -70,6 +78,10 @@ public class Database extends AbstractDBManager
 
         // Generate the SQL
         String sql = DBUtils.sqlInsertBuilder("PLAYER", map);
+
+        // Check if the player already exists and switch to update if so
+        if(dbUtils.doesRecordExist("PLAYER", "NAME", player.getName()))
+            sql = DBUtils.sqlUpdateBuilder("PLAYER", map, "NAME = '" + player.getName() + "'");
 
         // Execute the SQL
         dbUtils.executeStatement(sql);

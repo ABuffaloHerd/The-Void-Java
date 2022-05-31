@@ -8,6 +8,7 @@ import com.buffalo.thevoid.event.GameEvent;
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.exception.InsufficientManaException;
 import com.buffalo.thevoid.exception.ResetBattleLoopException;
+import com.buffalo.thevoid.exception.TableAlreadyExistsException;
 import com.buffalo.thevoid.factory.BossList;
 import com.buffalo.thevoid.factory.MonsterFactory;
 import com.buffalo.thevoid.gui.Mediator;
@@ -27,6 +28,11 @@ public class GameManager implements IEventHandler<GameEvent>
     private boolean playerLoaded;
     private Database database;
 
+    // Initializer
+    {
+        database = new Database();
+    }
+
     // calls methods to handle game events
     // program flow returns to main function after this.
     // Since this class handles events, it calls this function if it wants to raise an event.
@@ -41,6 +47,21 @@ public class GameManager implements IEventHandler<GameEvent>
                         player = NewGame.newPlayer();
                         Mediator.updatePlayer(player);
                         playerLoaded = player != null;
+
+                        if(playerLoaded)
+                        {
+                            // Save the player to the database
+                            try
+                            {
+                                database.clearAll();
+                                database.setup();
+                            }
+                            catch (TableAlreadyExistsException e)
+                            {
+                                System.out.println("Table already exists. Dropping and recreating table.");
+                            }
+
+                        }
                     }
             case LOADGAME ->
                     {
@@ -60,6 +81,8 @@ public class GameManager implements IEventHandler<GameEvent>
                         System.out.printf("Player %s saved!\n", player.name);
                         Mediator.sendToLog(String.format("Player %s saved!", player.name));
                         TextHandler.wait(2500);
+
+                        database.writePlayer(player);
                     }
             case SHOP -> shop();
             case RESUPPLY ->

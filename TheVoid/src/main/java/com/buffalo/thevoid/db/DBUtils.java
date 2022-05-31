@@ -116,7 +116,7 @@ public class DBUtils extends AbstractDBManager
     }
 
     // Builds an sql update statement.
-    public static String sqlUpdateBuilder(String table, HashMap<String, String> values, String where)
+    public static String sqlUpdateBuilder(String table, HashMap<?, ?> values, String where)
     {
         StringBuilder sb = new StringBuilder();
         sb.append("UPDATE ");
