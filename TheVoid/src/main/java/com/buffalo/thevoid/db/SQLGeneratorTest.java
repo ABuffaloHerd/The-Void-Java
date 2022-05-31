@@ -29,10 +29,10 @@ class SQLGeneratorTest
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         map.put("id", "INTEGER");
-        map.put("nigga", "VARCHAR(255)");
-        map.put("nigga1", "VARCHAR(255)");
-        map.put("nigga2", "VARCHAR(255)");
-        map.put("nigga3", "VARCHAR(255)");
+        map.put("qwerty", "VARCHAR(255)");
+        map.put("qwerty1", "VARCHAR(255)");
+        map.put("qwerty2", "VARCHAR(255)");
+        map.put("qwerty3", "VARCHAR(255)");
 
         System.out.println(DBUtils.sqlInsertBuilder("test", map));
     }
@@ -43,10 +43,10 @@ class SQLGeneratorTest
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         map.put("naem", "VARCHAR(255)");
-        map.put("nigga", "VARCHAR(255)");
-        map.put("nigga1", "VARCHAR(255)");
-        map.put("nigga2", "VARCHAR(255)");
-        map.put("nigga3", "VARCHAR(255)");
+        map.put("qwerty", "VARCHAR(255)");
+        map.put("qwerty1", "VARCHAR(255)");
+        map.put("qwerty2", "VARCHAR(255)");
+        map.put("qwerty3", "VARCHAR(255)");
 
         System.out.println(DBUtils.tableBuilder("test2", map));
 
@@ -73,10 +73,10 @@ class SQLGeneratorTest
         HashMap<String, String> map2 = new HashMap<>();
 
         map2.put("naem", "asdf4");
-        map2.put("nigga", "asdf");
-        map2.put("nigga1", "asdf");
-        map2.put("nigga2", "asdf");
-        map2.put("nigga3", "asdf");
+        map2.put("qwerty", "asdf");
+        map2.put("qwerty1", "asdf");
+        map2.put("qwerty2", "asdf");
+        map2.put("qwerty3", "asdf");
 
         String sql = DBUtils.sqlInsertBuilder("test2", map2);
 
@@ -87,10 +87,10 @@ class SQLGeneratorTest
 
             LinkedHashMap<String, String> map3 = new LinkedHashMap<>();
             map3.put("naem", "asdf420");
-            map3.put("nigga", "asdf2");
-            map3.put("nigga1", "asdf3");
-            map3.put("nigga2", "asdf4");
-            map3.put("nigga3", "asdf5");
+            map3.put("qwerty", "asdf2");
+            map3.put("qwerty1", "asdf3");
+            map3.put("qwerty2", "asdf4");
+            map3.put("qwerty3", "asdf5");
 
             sql = DBUtils.sqlUpdateBuilder("test2", map3, "naem = 'asdf4'");
         }
@@ -133,7 +133,7 @@ class SQLGeneratorTest
         {
             while(rs.next())
             {
-                System.out.println(rs.getString("naem") + " " + rs.getString("nigga"));
+                System.out.println(rs.getString("naem") + " " + rs.getString("qwerty"));
             }
         }
         catch (SQLException e)
