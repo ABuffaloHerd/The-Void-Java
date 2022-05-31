@@ -118,7 +118,7 @@ public class TextHandler
                 }
                 catch (OutOfBoundsException e)
                 {
-                    Mediator.sendToLog(null, "Input must be above " + (upper + 1) + " and below " + (lower - 1));
+                    Mediator.sendToLog(null, "Input must be blow " + (upper + 1) + " and above " + (lower - 1));
                 }
                 catch(InputMismatchException | NumberFormatException e)
                 {

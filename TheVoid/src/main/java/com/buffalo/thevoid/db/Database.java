@@ -8,9 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 // Main database class.
 public class Database extends AbstractDBManager
@@ -71,7 +69,7 @@ public class Database extends AbstractDBManager
         table = "EVENT";
         map = new LinkedHashMap<>();
 
-        map.put("ID", "INTEGER"); // Primary key
+        map.put("HASH", "VARCHAR(255)"); // Primary key
         map.put("EVENT", "VARCHAR(255)");
         map.put("TIME", "DATE");
 
@@ -100,6 +98,26 @@ public class Database extends AbstractDBManager
         {
             if(e.getSQLState().equals("42Y55"))
                 System.out.println("Table does not exist");
+        }
+    }
+
+    public void writeEvent(String event)
+    {
+        HashMap<String, Object> map = new HashMap<>();
+
+        map.put("HASH", UUID.randomUUID().toString());
+        map.put("EVENT", event);
+        map.put("TIME", Utilities.getDate());
+
+        String sql = DBUtils.sqlInsertBuilder("EVENT", map);
+
+        try
+        {
+            dbUtils.executeStatement(sql);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -144,4 +162,12 @@ public class Database extends AbstractDBManager
         return dbUtils.getAllPlayers();
     }
 
+    // Run to clear database
+    public static void main(String[] args)
+    {
+        Database db = new Database();
+
+        db.dropIt("PLAYER");
+        db.dropIt("EVENT");
+    }
 }

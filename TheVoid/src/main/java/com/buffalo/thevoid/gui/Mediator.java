@@ -82,9 +82,9 @@ public class Mediator
         mainFrame.logPanel.enableInput();
     }
 
-    public static void setButtons(int count)
+    public static void setButtons(int count, int start)
     {
-        mainFrame.buttonPanel.rebuild(count);
+        mainFrame.buttonPanel.rebuild(count, start);
         mainFrame.invalidate();
         mainFrame.repaint();
     }

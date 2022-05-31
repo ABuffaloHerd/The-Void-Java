@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -147,6 +148,42 @@ class SQLGeneratorTest
         try
         {
             dbUtils.executeStatement("DROP TABLE test2");
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void dateTest()
+    {
+        try
+        {
+            LinkedHashMap<String, String> map = new LinkedHashMap<>();
+            map.put("name", "VARCHAR(255)");
+            map.put("date", "DATE");
+
+            String sql = DBUtils.tableBuilder("dateTest", map);
+
+            Statement s = conn.createStatement();
+
+            s.execute(sql);
+            System.out.println(sql);
+            System.out.println("No errors in table creation");
+
+            LinkedHashMap<String, Object> map2 = new LinkedHashMap<>();
+
+            // This is how to insert a date into database
+            Calendar cal = Calendar.getInstance();
+            Date date = new Date(cal.getTimeInMillis());
+
+            map2.put("name", "asdf");
+            map2.put("date", date);
+
+            sql = DBUtils.sqlInsertBuilder("dateTest", map2);
+            s.execute(sql);
+
         }
         catch (SQLException e)
         {

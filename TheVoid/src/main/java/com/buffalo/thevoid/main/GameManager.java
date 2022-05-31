@@ -26,7 +26,7 @@ public class GameManager implements IEventHandler<GameEvent>
     // NOTE: objects are pass by reference
     private Player player;
     private boolean playerLoaded;
-    private Database database;
+    Database database; // package private so that the main class can access it.
 
     // Initializer
     {
@@ -52,6 +52,7 @@ public class GameManager implements IEventHandler<GameEvent>
                         {
                             // mAKE DATAVBASE
                             database.setup();
+                            database.writeEvent("New game started");
                         }
                     }
             case LOADGAME ->
@@ -63,6 +64,7 @@ public class GameManager implements IEventHandler<GameEvent>
                             System.out.printf("Player %s loaded!\n", player.name);
                             Mediator.sendToLog(String.format("Player %s loaded!", player.name));
                             Mediator.updatePlayer(player);
+                            database.writeEvent("Player loaded");
                         }
                         TextHandler.wait(1800);
                     }
@@ -74,6 +76,7 @@ public class GameManager implements IEventHandler<GameEvent>
                         TextHandler.wait(2500);
 
                         database.writePlayer(player);
+                        database.writeEvent("Player " + player.name + " saved");
                     }
             case SHOP -> shop();
             case RESUPPLY ->
@@ -83,23 +86,28 @@ public class GameManager implements IEventHandler<GameEvent>
                         Mediator.sendToLog("Your stats have been replenished!");
                         Mediator.updatePlayer(player);
                         TextHandler.wait(1500);
+
+                        database.writeEvent("Player resupplied");
                     }
             case BATTLE ->
                     {
                         Mediator.disableTextFields();
-                        Mediator.setButtons(6);
+                        Mediator.setButtons(6, 1);
+                        database.writeEvent("Player entered battle");
                         battle();
                     }
             case BOSS ->
                     {
-                        Mediator.setButtons(6);
+                        Mediator.setButtons(6, 1);
+                        database.writeEvent("Player entered boss battle");
                         bossBattle();
                     }
             case EXBOSS ->
                     {
-                        Mediator.setButtons(6);
+                        Mediator.setButtons(6, 1);
                         Mediator.disableTextFields();
                         Mediator.enableButtons();
+                        database.writeEvent("Player entered ex boss battle and probably died");
                         finalBoss();
                     }
             case LEVELUP ->
@@ -116,7 +124,8 @@ public class GameManager implements IEventHandler<GameEvent>
                             System.out.println("New spell unlocked!");
                             Mediator.sendToLog("New spell unlocked!");
                         }
-                        
+
+                        database.writeEvent("Player leveled up");
                         TextHandler.wait(1000);
                     }
             case PLAYERWIN ->
@@ -131,6 +140,8 @@ public class GameManager implements IEventHandler<GameEvent>
                             Mediator.sendToLog("You leveled up!");
                             handleEvent(this, GameEvent.LEVELUP);
                         }
+
+                        database.writeEvent("Player won");
                         TextHandler.wait(1000); // No auto resupply
                     }
             case PLAYERLOSE ->
@@ -141,6 +152,9 @@ public class GameManager implements IEventHandler<GameEvent>
                         Mediator.sendToLog("go touch some grass");
                         Mediator.sendToLog("so many nubs in this game");
                         TextHandler.wait(8000);
+
+                        database.writeEvent("Player died");
+
                         handleEvent(this, GameEvent.RESUPPLY);
                     }
         }
@@ -175,7 +189,7 @@ public class GameManager implements IEventHandler<GameEvent>
         // correspond to the actual weapon index.
         // However, this shouldn't happen to begin with so i'm going to ignore it.
         Mediator.sendToLog(this, "Enter the index of the weapon you wish to equip.");
-        Mediator.setButtons(unlocked);
+        Mediator.setButtons(unlocked - 1, 0);
         int selection = TextHandler.validInt(unlocked - 1, 0);
 
         // Check level
@@ -219,6 +233,7 @@ public class GameManager implements IEventHandler<GameEvent>
         }
 
         // This also has the same issue as the weapon selection
+        Mediator.setButtons(unlocked - 1, 0);
         selection = TextHandler.validInt(unlocked - 1, 0);
 
         // Check level
