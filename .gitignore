@@ -4,3 +4,4 @@ logs/out.txt
 /TheVoid/target/
 .idea
 *.iml
+/TheVoid/TheVoidDB/*

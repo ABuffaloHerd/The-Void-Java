@@ -11,7 +11,6 @@ import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.LogEventHandler;
 import com.buffalo.thevoid.io.TextHandler;
-import org.w3c.dom.Text;
 
 import javax.swing.*;
 import java.util.HashSet;
@@ -30,11 +29,11 @@ public class Program implements IEventPublisher
 
     public static Program program;
     public static GameManager manager;
+    public static boolean gameRunning = true;
 
     public static void main(String[] args)
     {
         // Initialize the game
-        boolean gameRunning = true;
         program = new Program();
         manager = new GameManager();
 
@@ -47,7 +46,7 @@ public class Program implements IEventPublisher
         SwingUtilities.invokeLater(MainFrame::new);
 
         // Make main thread wait for gui thread to finish
-        TextHandler.wait(1000);
+        TextHandler.wait(2000);
 
         // Register the game event handlers
         program.addEventHandler(manager);
@@ -69,7 +68,7 @@ public class Program implements IEventPublisher
         {
             TextHandler.clearConsole();
             Mediator.clearLog();
-            Mediator.setButtons(11);
+            Mediator.setButtons(11, 1);
 
             Mediator.updateEnemy(null);
 
@@ -105,6 +104,9 @@ public class Program implements IEventPublisher
 
             gameRunning = program.selectEvent(program, manager, selection);
         }
+
+        // I give up
+        System.exit(0);
     }
 
     private boolean selectEvent(Program program, GameManager manager, int selection)

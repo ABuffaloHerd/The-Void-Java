@@ -1,6 +1,7 @@
 package com.buffalo.thevoid.io;
 
 import com.buffalo.thevoid.gui.Mediator;
+import com.buffalo.thevoid.main.Program;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -11,7 +12,6 @@ import java.util.Scanner;
 public class TextHandler
 {
     private static final Scanner s = new Scanner(System.in);
-    private static final InputQueue q = new InputQueue();
 
     /**
      * Validates input to match the system used here.
@@ -94,7 +94,7 @@ public class TextHandler
                 InputQueue.queue.clear();
             }
 
-            while(lock)
+            while(lock && Program.gameRunning)
             {
                 try
                 {
@@ -118,7 +118,7 @@ public class TextHandler
                 }
                 catch (OutOfBoundsException e)
                 {
-                    Mediator.sendToLog(null, "Input must be above " + (upper + 1) + " and below " + (lower - 1));
+                    Mediator.sendToLog(null, "Input must be blow " + (upper + 1) + " and above " + (lower - 1));
                 }
                 catch(InputMismatchException | NumberFormatException e)
                 {
@@ -140,9 +140,13 @@ public class TextHandler
         // This halts the main thread.
         try
         {
-            t.join();
+            if(Program.gameRunning)
+                t.join();
         }
         catch (InterruptedException ignore) {}
+
+        // STOP
+        t.stop();
 
         return input[0];
     }

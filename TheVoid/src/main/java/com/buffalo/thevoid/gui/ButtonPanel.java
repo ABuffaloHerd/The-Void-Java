@@ -12,17 +12,17 @@ public class ButtonPanel extends JPanel
 
     public ButtonPanel()
     {
-        this(6);
+        this(6, 1);
     }
 
-    public ButtonPanel(int BUTTONCOUNT)
+    public ButtonPanel(int BUTTONCOUNT, int start)
     {
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createTitledBorder("Controls"));
-        constructButtons(BUTTONCOUNT);
+        constructButtons(BUTTONCOUNT, start);
     }
 
-    private void constructButtons(int BUTTONCOUNT)
+    private void constructButtons(int BUTTONCOUNT, int start)
     {
         GridBagConstraints c = new GridBagConstraints();
 
@@ -31,8 +31,7 @@ public class ButtonPanel extends JPanel
         // Add buttons using loops.
         buttons.clear();
 
-        // Button values start at 1, not 0
-        for(int x = 1; x <= BUTTONCOUNT; x++)
+        for(int x = start; x <= BUTTONCOUNT; x++)
         {
             buttons.add(new CustomButton(Integer.toString(x), x));
         }
@@ -88,10 +87,10 @@ public class ButtonPanel extends JPanel
         }
     }
 
-    public void rebuild(int count)
+    public void rebuild(int count, int start)
     {
         removeAll();
-        constructButtons(count);
+        constructButtons(count, start);
         revalidate();
         repaint();
     }
