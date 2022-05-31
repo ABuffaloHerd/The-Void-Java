@@ -4,6 +4,7 @@ import com.buffalo.thevoid.data.Tuple;
 import com.buffalo.thevoid.entity.DamageType;
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
+import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.ConsoleColours;
 import com.buffalo.thevoid.io.ConsoleEventHandler;
 
@@ -209,6 +210,9 @@ public class WeaponList implements IEventPublisher
 
         // Register event handler
         this.addEventHandler(new ConsoleEventHandler());
+
+        // Register gui as event handler
+        this.addEventHandler(Mediator.getMainFrame().logPanel);
 
         // TODO: RESET ALL TO FALSE EXCEPT WOODEN SWORD BEFORE SUBMISSION
         WeaponData  = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.buffalo.thevoid.data.Tuple;
 import com.buffalo.thevoid.entity.DamageType;
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
+import com.buffalo.thevoid.gui.Mediator;
 import com.buffalo.thevoid.io.ConsoleEventHandler;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class SpellList implements IEventPublisher
         Tornado = new Spell("Tornado",
                 IEntity ->
                 {
-                    raise("Tornado!");
+                    raise("Tornado \"Indication to the Divine\"");
                     int total = IEntity.takeDamage(100, DamageType.MAGIC);
 
                     for(int i = 0; i < 3; i++)
@@ -123,6 +124,9 @@ public class SpellList implements IEventPublisher
 
         // Register new event handler
         this.addEventHandler(new ConsoleEventHandler());
+
+        // Register the log panel in the gui as an event handler
+        this.addEventHandler(Mediator.getMainFrame().logPanel);
 
         SpellData.add(new Tuple<>(Fireball, true));
         SpellData.add(new Tuple<>(Lightning, false));

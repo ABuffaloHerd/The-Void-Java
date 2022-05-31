@@ -2,11 +2,9 @@ package com.buffalo.thevoid.gui;
 
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.event.IEventPublisher;
-import com.buffalo.thevoid.io.InputQueue;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
-import javax.swing.text.Document;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -33,7 +31,7 @@ public class LogPanel extends JPanel implements IEventHandler<String>, IEventPub
 
         this.log = new JTextArea();
         this.queue = new LinkedList<>();
-        this.maxEntries = 43;
+        this.maxEntries = 70;
 
         // LogPanel settings
         log.setEditable(false);

@@ -1,9 +1,9 @@
 package com.buffalo.thevoid.io;
 
 import com.buffalo.thevoid.data.Config;
+import com.buffalo.thevoid.data.Tuple;
 import com.buffalo.thevoid.entity.Player;
-import com.buffalo.thevoid.equipment.SpellList;
-import com.buffalo.thevoid.equipment.WeaponList;
+import com.buffalo.thevoid.utils.Utilities;
 
 import java.io.*;
 
@@ -90,23 +90,7 @@ public class FileHandler
     {
         p.refreshStats(); // make sure player is at max stats before writing to file
 
-        // Count weapons unlocked
-        int weaponsUnlocked = 0;
-        for(var v: WeaponList.WeaponData)
-            if (v.getItem2())
-                weaponsUnlocked++;
-
-        // Count spells unlocked
-        int spellsUnlocked = 0;
-        for(var v: SpellList.SpellData)
-            if(v.getItem2())
-                spellsUnlocked++;
-
-        // Compensating for wooden sword being unlocked at the start.
-        weaponsUnlocked -= 1;
-
-        // Compensating for fireball being unlocked at the start.
-        spellsUnlocked -= 1;
+        Tuple<Integer, Integer> allUnlocked = Utilities.getWeaponCount();
 
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(Config.cwd + "/resources/save/player.dat")))
         {
@@ -117,8 +101,8 @@ public class FileHandler
             bw.write("MP=" + p.getMaxMP() + "\n");
             bw.write("DEF=" + p.getDEF() + "\n");
             bw.write("RES=" + p.getRES() + "\n");
-            bw.write("WeaponsUnlocked=" + weaponsUnlocked + "\n");
-            bw.write("SpellsUnlocked=" + spellsUnlocked + "\n");
+            bw.write("WeaponsUnlocked=" + allUnlocked.getItem1() + "\n");
+            bw.write("SpellsUnlocked=" + allUnlocked.getItem2() + "\n");
         }
         catch (IOException e)
         {
