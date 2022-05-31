@@ -1,9 +1,7 @@
 package com.buffalo.thevoid.db;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Locale;
+import java.util.*;
 
 public class DBUtils extends AbstractDBManager
 {
@@ -151,30 +149,6 @@ public class DBUtils extends AbstractDBManager
         return sb.toString();
     }
 
-    /**
-     * Creates a database with the one table required.
-     */
-    private void fullDBCreation()
-    {
-        try(Connection conn = DriverManager.getConnection(url, user, password))
-        {
-            Statement s = conn.createStatement();
-            s.execute("DROP TABLE *");
-            System.out.println("Dropped all tables.");
-
-            s.execute("CREATE TABLE PLAYERS (id INTEGER PRIMARY KEY, name VARCHAR(255), kills INTEGER)");
-            System.out.println("Created PLAYERS table.");
-        }
-        catch (SQLException e)
-        {
-            testTableExist(e);
-        }
-        finally
-        {
-            System.out.println("Finished dbase creation.");
-        }
-    }
-
     // For use in try catch blocks.
     private void testTableExist(SQLException e)
     {
@@ -228,17 +202,13 @@ public class DBUtils extends AbstractDBManager
      * Executes an sql statement. Target database is the one used in the constructor.
      * @param sql your sql statement. I hope you know what you're doing.
      */
-    public void executeStatement(String sql)
+    public void executeStatement(String sql) throws SQLException
     {
-        try(Connection conn = DriverManager.getConnection(url, user, password))
-        {
-            Statement s = conn.createStatement();
-            s.execute(sql);
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        Connection conn = DriverManager.getConnection(url, user, password);
+        Statement s = conn.createStatement();
+        s.execute(sql);
+
+        conn.close();
     }
 
     public boolean doesRecordExist(String table, String column, String value)
@@ -254,5 +224,43 @@ public class DBUtils extends AbstractDBManager
             e.printStackTrace();
             return false;
         }
+    }
+
+    // package private
+    Set<String> getAllPlayers()
+    {
+        // Get all records from the player table and ram into a set
+        LinkedHashSet<String> set = new LinkedHashSet<>();
+        StringBuilder sb = new StringBuilder();
+        String sql = sqlReadAllBuilder("PLAYER");
+        ResultSet rs = null;
+        ResultSetMetaData rsmd = null;
+
+        try(Connection c = DriverManager.getConnection(url, user, password))
+        {
+            rs = c.createStatement().executeQuery(sql);
+            rsmd = rs.getMetaData();
+
+            if(!rs.next()) // No players exist
+            {
+                set.add("No players exist.");
+                return set;
+            }
+
+            // Build string
+            for(int i = 1; i <= rsmd.getColumnCount(); i++)
+            {
+                sb.append(rsmd.getColumnName(i)).append(": ").append(rs.getString(i));
+                set.add(sb.append("\n").toString());
+                sb.setLength(0); // reset string builder
+            }
+
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return set;
     }
 }

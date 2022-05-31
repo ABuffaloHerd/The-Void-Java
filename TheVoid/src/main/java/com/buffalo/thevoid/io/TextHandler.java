@@ -1,6 +1,7 @@
 package com.buffalo.thevoid.io;
 
 import com.buffalo.thevoid.gui.Mediator;
+import com.buffalo.thevoid.main.Program;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -93,7 +94,7 @@ public class TextHandler
                 InputQueue.queue.clear();
             }
 
-            while(lock)
+            while(lock && Program.gameRunning)
             {
                 try
                 {
@@ -139,9 +140,13 @@ public class TextHandler
         // This halts the main thread.
         try
         {
-            t.join();
+            if(Program.gameRunning)
+                t.join();
         }
         catch (InterruptedException ignore) {}
+
+        // STOP
+        t.stop();
 
         return input[0];
     }

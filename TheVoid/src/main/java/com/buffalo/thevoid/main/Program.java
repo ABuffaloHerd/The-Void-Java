@@ -29,11 +29,11 @@ public class Program implements IEventPublisher
 
     public static Program program;
     public static GameManager manager;
+    public static boolean gameRunning = true;
 
     public static void main(String[] args)
     {
         // Initialize the game
-        boolean gameRunning = true;
         program = new Program();
         manager = new GameManager();
 
@@ -104,6 +104,9 @@ public class Program implements IEventPublisher
 
             gameRunning = program.selectEvent(program, manager, selection);
         }
+
+        // I give up
+        System.exit(0);
     }
 
     private boolean selectEvent(Program program, GameManager manager, int selection)

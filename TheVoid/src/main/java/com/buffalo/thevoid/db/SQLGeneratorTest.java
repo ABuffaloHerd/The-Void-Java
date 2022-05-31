@@ -20,8 +20,6 @@ class SQLGeneratorTest
     {
         conn = DriverManager.getConnection("jdbc:derby:TheVoidDB;create=true", "", "");
         dbUtils = new DBUtils("jdbc:derby:TheVoidDB;create=true", "", "");
-
-        Statement s = conn.createStatement();
     }
 
     @Test
@@ -146,7 +144,14 @@ class SQLGeneratorTest
     @Test
     void dropIt()
     {
-        dbUtils.executeStatement("DROP TABLE test2");
+        try
+        {
+            dbUtils.executeStatement("DROP TABLE test2");
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @AfterAll

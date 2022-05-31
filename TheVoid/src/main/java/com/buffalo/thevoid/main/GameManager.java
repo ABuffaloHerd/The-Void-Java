@@ -8,7 +8,6 @@ import com.buffalo.thevoid.event.GameEvent;
 import com.buffalo.thevoid.event.IEventHandler;
 import com.buffalo.thevoid.exception.InsufficientManaException;
 import com.buffalo.thevoid.exception.ResetBattleLoopException;
-import com.buffalo.thevoid.exception.TableAlreadyExistsException;
 import com.buffalo.thevoid.factory.BossList;
 import com.buffalo.thevoid.factory.MonsterFactory;
 import com.buffalo.thevoid.gui.Mediator;
@@ -17,6 +16,7 @@ import com.buffalo.thevoid.io.FileHandler;
 import com.buffalo.thevoid.io.TextHandler;
 
 import java.util.Random;
+import java.util.Set;
 
 /**
  * This bad boy contains ALL game related functions, while the actual loop is handled by the main function.
@@ -50,17 +50,8 @@ public class GameManager implements IEventHandler<GameEvent>
 
                         if(playerLoaded)
                         {
-                            // Save the player to the database
-                            try
-                            {
-                                database.clearAll();
-                                database.setup();
-                            }
-                            catch (TableAlreadyExistsException e)
-                            {
-                                System.out.println("Table already exists. Dropping and recreating table.");
-                            }
-
+                            // mAKE DATAVBASE
+                            database.setup();
                         }
                     }
             case LOADGAME ->
@@ -621,11 +612,13 @@ public class GameManager implements IEventHandler<GameEvent>
     // Do i need a new event just to run this?
     public void showStats()
     {
-        System.out.println(player.getHealthBar());
-        System.out.println(player.getMagicBar());
-        System.out.println("DEF: " + player.getDEF());
-        System.out.println("RES: " + player.getRES());
-        System.out.println("Level: " + player.getLevel());
+        // read database to show stats
+        Set<String> playerdata = database.getAllPlayers();
+        for (String s : playerdata)
+        {
+            System.out.println(s);
+            Mediator.sendToLog(s);
+        }
 
         TextHandler.wait(6000);
     }
