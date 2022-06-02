@@ -5,3 +5,4 @@ logs/out.txt
 .idea
 *.iml
 /TheVoid/TheVoidDB/*
+/TheVoid/nbproject/

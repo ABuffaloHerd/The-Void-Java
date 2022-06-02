@@ -1,30 +1,69 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit4TestClass.java to edit this template
+ */
 package com.buffalo.thevoid.db;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-import java.sql.*;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-// TODO: IMPORTANT!!! remove all n words
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.Before;
 
-class SQLGeneratorTest
+/**
+ *
+ * @author aclh2
+ */
+public class DBUtilsTest 
 {
-    private static Connection conn;
-    private static DBUtils dbUtils;
-
-    @BeforeAll
-    static void setUpBeforeClass() throws Exception
+    DBUtils dbUtils;
+    Connection conn;
+    
+    public DBUtilsTest() 
     {
-        conn = DriverManager.getConnection("jdbc:derby:TheVoidDB;create=true", "", "");
-        dbUtils = new DBUtils("jdbc:derby:TheVoidDB;create=true", "", "");
+
+    }
+    
+    @Before
+    public void init()
+    {
+        dbUtils = new DBUtils("jdbc:derby:TEST;create=true", "", "");
+        try
+        {
+            conn = DriverManager.getConnection("jdbc:derby:TEST;create=true", "", "");
+        }
+        catch(Exception stfu) { }
     }
 
     @Test
-    void test1()
+    public void testTableSQL() 
+    {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+
+        map.put("naem", "VARCHAR(255)");
+        map.put("qwerty", "VARCHAR(255)");
+        map.put("qwerty1", "VARCHAR(255)");
+        map.put("qwerty2", "VARCHAR(255)");
+        map.put("qwerty3", "VARCHAR(255)");
+
+        String sql = DBUtils.tableBuilder("test2", map);
+        
+        System.out.println(sql);
+        
+        assertEquals("CREATE TABLE test2 (naem VARCHAR(255) PRIMARY KEY, qwerty VARCHAR(255), qwerty1 VARCHAR(255), qwerty2 VARCHAR(255), qwerty3 VARCHAR(255))", sql);
+    }
+    
+    @Test
+    public void testInsertSQL()
     {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
@@ -36,9 +75,9 @@ class SQLGeneratorTest
 
         System.out.println(DBUtils.sqlInsertBuilder("test", map));
     }
-
+    
     @Test
-    void testTableCreation()
+    public void testTableCreation()
     {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
@@ -111,9 +150,9 @@ class SQLGeneratorTest
             e.printStackTrace();
         }
     }
-
+    
     @Test
-    void readAllTest()
+    public void readAllTest()
     {
         System.out.println(DBUtils.sqlReadAllBuilder("test2"));
         ResultSet rs = null;
@@ -141,22 +180,9 @@ class SQLGeneratorTest
             e.printStackTrace();
         }
     }
-
+    
     @Test
-    void dropIt()
-    {
-        try
-        {
-            dbUtils.executeStatement("DROP TABLE test2");
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    void dateTest()
+    public void dateTest()
     {
         try
         {
@@ -189,11 +215,5 @@ class SQLGeneratorTest
         {
             e.printStackTrace();
         }
-    }
-
-    @AfterAll
-    static void tearDownAfterClass() throws Exception
-    {
-        conn.close();
     }
 }
