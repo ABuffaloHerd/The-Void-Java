@@ -1,9 +1,9 @@
 Name=Frank
-Level=0
-KillCount=0
+Level=10
+KillCount=50
 HP=200
 MP=50
 DEF=10
 RES=0
-WeaponsUnlocked=0
-SpellsUnlocked=0
+WeaponsUnlocked=8
+SpellsUnlocked=8

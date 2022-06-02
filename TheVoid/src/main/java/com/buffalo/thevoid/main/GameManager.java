@@ -353,6 +353,7 @@ public class GameManager implements IEventHandler<GameEvent>
 
         // Pick a boss, make sure level matches
         Mediator.sendToLog("Enter a number to select a boss: ");
+        Mediator.setButtons(BossList.BossData.size() - 1, 0);
         int bossSelected = TextHandler.validInt(counter, 0);
         if(BossList.BossData.get(bossSelected).getItem3() > player.getLevel())
         {
@@ -369,6 +370,8 @@ public class GameManager implements IEventHandler<GameEvent>
         // Change controls to battle mode
         Mediator.disableTextFields();
         Mediator.enableButtons();
+
+        Mediator.setButtons(6, 1);
 
         while(!boss.isDead() && !player.isDead())
         {
